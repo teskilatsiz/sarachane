@@ -8,14 +8,14 @@
 
     <meta property="og:title" content="Saraçhane">
     <meta property="og:description" content="Saraçhane, polis ve protestocu arasındaki etkileşimi konu alan, sandbox tarzı bir hayatta kalma oyunudur. Slogan atarak direnişe katıl!">
-    <meta property="og:image" content="https://i.hizliresim.com/l2xzp4y.png">
+    <meta property="og:image" content="https://i.hizliresim.com/17vk8mj.png">
     <meta property="og:url" content="https://sarachane.vercel.app/">
     <meta property="og:type" content="website">
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Saraçhane">
     <meta name="twitter:description" content="Saraçhane, polis ve protestocu arasındaki etkileşimi konu alan, sandbox tarzı bir hayatta kalma oyunudur. Slogan atarak direnişe katıl!">
-    <meta name="twitter:image" content="https://i.hizliresim.com/l2xzp4y.png">
+    <meta name="twitter:image" content="https://i.hizliresim.com/17vk8mj.png">
     <meta name="twitter:url" content="https://sarachane.vercel.app/">
     <style>
         body { margin: 0; overflow: hidden; background-color: #1a1a1a; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: white; image-rendering: pixelated; -ms-interpolation-mode: nearest-neighbor; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; touch-action: none; }
@@ -42,9 +42,9 @@
         .menu_butonu:hover { background: linear-gradient(145deg, #6f6f6f, #4f4f4f); }
         .menu_butonu:active { transform: scale(0.98); box-shadow: 0 1px 2px rgba(0,0,0,0.3), inset 0 1px 1px rgba(0,0,0,0.1); }
 
-         #ayarlarIcerigi { display: none; margin-top: 25px; padding: clamp(15px, 3vw, 25px); background-color: rgba(0,0,0,0.3); border-radius: 5px; text-align: left; border: 1px solid #555; }
-         #ayarlarIcerigi p { font-size: clamp(0.75em, 2.3vw, 0.9em); margin-bottom: 10px; color: #ddd; }
-         #ayarlarIcerigi strong { color: #fff; font-weight: 600; }
+         #ayarlarIcerigi, #destekIcerigi { display: none; margin-top: 25px; padding: clamp(15px, 3vw, 25px); background-color: rgba(0,0,0,0.3); border-radius: 5px; text-align: left; border: 1px solid #555; }
+         #ayarlarIcerigi p, #destekIcerigi p { font-size: clamp(0.75em, 2.3vw, 0.9em); margin-bottom: 10px; color: #ddd; }
+         #ayarlarIcerigi strong, #destekIcerigi strong { color: #fff; font-weight: 600; }
          .ayar_ogesi { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; margin-bottom: 12px; padding: 5px 0; }
          .ayar_ogesi label { margin-right: 15px; color: #ccc; flex-shrink: 0; margin-bottom: 5px; font-size: clamp(0.75em, 2.3vw, 0.9em); }
          .ayar_ogesi input[type="range"] { flex-grow: 1; min-width: 100px; max-width: 180px; cursor: pointer; height: 6px; background: #555; border-radius: 3px; outline: none; -webkit-appearance: none; appearance: none; border: 1px solid black; }
@@ -53,6 +53,10 @@
          .ayar_ogesi span { min-width: 40px; text-align: right; color: #eee; font-size: clamp(0.75em, 2.3vw, 0.9em); font-weight: bold; margin-left: 8px; }
          hr { border: none; border-top: 1px solid #555; margin: 20px 0; }
          .gelistirici_notu { font-size: clamp(0.7em, 2vw, 0.8em); color: #999; margin-top: 20px; text-align: center; }
+         #moneroAdresiContainer { word-wrap: break-word; background-color: rgba(255,255,255,0.1); padding: 8px; border-radius: 4px; cursor: pointer; font-family: monospace; transition: background-color 0.2s; }
+         #moneroAdresiContainer:hover { background-color: rgba(255,255,255,0.2); }
+         #kopyalamaMesaji { display: none; color: #aaffaa; font-weight: bold; margin-top: 10px; font-size: clamp(0.7em, 2vw, 0.8em); }
+
 
         #bildirim { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); background-color: rgba(255, 180, 30, 0.95); color: black; padding: 8px 15px; border-radius: 5px; font-size: clamp(0.9em, 2.5vw, 1.1em); font-weight: bold; text-shadow: 1px 1px 0px rgba(255,255,255,0.6); display: none; z-index: 50; opacity: 0; transition: opacity 0.3s ease-out, top 0.3s ease-out; pointer-events: none; border: 1px solid black; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
         #biberGaziKaplamasi { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(ellipse at center, rgba(255,180,50,0.1) 0%, rgba(255,165,0,0.6) 70%, rgba(220,120,0,0.8) 100%); opacity: 0; transition: opacity 0.2s ease-in-out; pointer-events: none; z-index: 10; display: none; }
@@ -221,6 +225,7 @@
             <p>Polislerin yakınındayken slogan atarak Ekrem İmamoğlu'nun serbest kalmasına yardımcı ol!</p>
             <button id="baslatButonu" class="menu_butonu">Direnişe Katıl</button>
             <button id="ayarlarButonu" class="menu_butonu">Ayarlar</button>
+            <button id="destekButonu" class="menu_butonu">Bizi Destekleyin</button>
             <div id="ayarlarIcerigi">
                  <p><strong>Kontroller (PC):</strong></p>
                  <p>W, S = İleri / Geri | A, D = Sol / Sağ</p>
@@ -240,6 +245,14 @@
                      <span id="kosmaHiziDegeri">1.8x</span>
                  </div>
                  <hr>
+            </div>
+            <div id="destekIcerigi">
+                <p><strong>Bizi Destekleyin:</strong></p>
+                <p>Oyunun geliştirilmesine Monero (XMR) ile destek olabilirsiniz. Aşağıdaki adrese tıklayarak kopyalayabilir ve seçtiğiniz cüzdandan gönderim yapabilirsiniz:</p>
+                <p id="moneroAdresiContainer" title="Kopyalamak için tıkla">47byoQg6HTY1hy7rutqL1hNhUX78jPY7TUvbHPi31ayfKnc3J6cfhhAChyDdNENoLNYfpNmPM3EUxX1wU2kgPA745vQPdAp</p>
+                <p id="kopyalamaMesaji">Monero adresi kopyalandı! Bu adrese gönderim yaparak desteğinizi belirtebilirsiniz.</p>
+                <hr>
+                <p>Desteğiniz için teşekkür ederiz!</p>
             </div>
              <p class="gelistirici_notu">Geliştirici: Teşkilatsız</p>
         </div>
@@ -361,6 +374,7 @@
         let megaphoneAnimationTime = 0;
 
         const engelleyici = document.getElementById('engelleyici'); const menuArayuzu = document.getElementById('menuArayuzu'); const olumEkrani = document.getElementById('olumEkrani'); const olumMesaji = document.getElementById('olumMesaji'); const yenidenBaslatButonu = document.getElementById('yenidenBaslatButonu'); const baslatButonu = document.getElementById('baslatButonu'); const ayarlarButonu = document.getElementById('ayarlarButonu'); const ayarlarIcerigi = document.getElementById('ayarlarIcerigi');
+        const destekButonu = document.getElementById('destekButonu'); const destekIcerigi = document.getElementById('destekIcerigi'); const moneroAdresiContainer = document.getElementById('moneroAdresiContainer'); const kopyalamaMesaji = document.getElementById('kopyalamaMesaji');
         const bildirimUI = document.getElementById('bildirim'); const kosmaKaydirici = document.getElementById('kosmaKaydirici'); const kosmaHiziDegeriUI = document.getElementById('kosmaHiziDegeri'); const canCubuguIc = document.getElementById('canCubuguIc'); const dayaniklilikCubuguIc = document.getElementById('dayaniklilikCubuguIc'); const hasarKaplamasi = document.getElementById('hasarKaplamasi'); const biberGaziKaplamasi = document.getElementById('biberGaziKaplamasi');
         const mobilKontroller = document.getElementById('mobilKontroller'); const joystickAlani = document.getElementById('joystickAlani'); const joystickTabani = document.getElementById('joystickTabani'); const joystickCubugu = document.getElementById('joystickCubugu'); const kosuButonu = document.getElementById('kosuButonu');
         const ziplamaButonu = document.getElementById('ziplamaButonu');
@@ -491,6 +505,8 @@
         function setupMenu() {
             baslatButonu.addEventListener('click', startGame);
             ayarlarButonu.addEventListener('click', toggleSettings);
+            destekButonu.addEventListener('click', toggleSupportInfo);
+            moneroAdresiContainer.addEventListener('click', copyMoneroAddress);
         }
 
         function startGame() {
@@ -592,6 +608,8 @@
 
              bildirimUI.style.display = 'none';
              ayarlarIcerigi.style.display = 'none';
+             destekIcerigi.style.display = 'none';
+             kopyalamaMesaji.style.display = 'none';
 
              if (controls && controls.isLocked) {
                  controls.unlock();
@@ -609,6 +627,38 @@
 
         function toggleSettings() {
             ayarlarIcerigi.style.display = ayarlarIcerigi.style.display === 'none' ? 'block' : 'none';
+            if (ayarlarIcerigi.style.display === 'block') {
+                destekIcerigi.style.display = 'none';
+                kopyalamaMesaji.style.display = 'none';
+            }
+        }
+
+        function toggleSupportInfo() {
+            destekIcerigi.style.display = destekIcerigi.style.display === 'none' ? 'block' : 'none';
+             if (destekIcerigi.style.display === 'block') {
+                ayarlarIcerigi.style.display = 'none';
+            }
+             kopyalamaMesaji.style.display = 'none';
+        }
+
+        function copyMoneroAddress() {
+            const address = moneroAdresiContainer.textContent || moneroAdresiContainer.innerText;
+             if (!navigator.clipboard) {
+                 kopyalamaMesaji.textContent = "Panoya kopyalama desteklenmiyor.";
+                 kopyalamaMesaji.style.color = "#ffaaaa";
+                 kopyalamaMesaji.style.display = 'block';
+                 return;
+             }
+             navigator.clipboard.writeText(address).then(() => {
+                 kopyalamaMesaji.textContent = "Monero adresi kopyalandı! Bu adrese gönderim yaparak desteğinizi belirtebilirsiniz.";
+                 kopyalamaMesaji.style.color = "#aaffaa";
+                 kopyalamaMesaji.style.display = 'block';
+                 setTimeout(() => { kopyalamaMesaji.style.display = 'none'; }, 3000);
+             }).catch(err => {
+                 kopyalamaMesaji.textContent = "Adres kopyalanamadı: " + err;
+                 kopyalamaMesaji.style.color = "#ffaaaa";
+                 kopyalamaMesaji.style.display = 'block';
+             });
         }
 
         function pauseGame() {
@@ -624,6 +674,8 @@
              if (sloganSeviyeKapsayici) sloganSeviyeKapsayici.style.display = 'none';
              bildirimUI.style.display = 'none';
              ayarlarIcerigi.style.display = 'none';
+             destekIcerigi.style.display = 'none';
+             kopyalamaMesaji.style.display = 'none';
 
              isSprinting = false;
              if(windLinesMesh) windLinesMesh.visible = false;
