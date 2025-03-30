@@ -1,0 +1,2505 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Saraçhane #Direniş</title>
+    <meta name="description" content="Saraçhane, polis ve protestocu arasındaki etkileşimi konu alan, sandbox tarzı bir hayatta kalma oyunudur.">
+
+    <meta property="og:title" content="Saraçhane">
+    <meta property="og:description" content="Saraçhane, polis ve protestocu arasındaki etkileşimi konu alan, sandbox tarzı bir hayatta kalma oyunudur.">
+    <meta property="og:image" content="https://i.hizliresim.com/evxqhuv.png">
+    <meta property="og:url" content="https://sarachane.vercel.app/">
+    <meta property="og:type" content="website">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Saraçhane">
+    <meta name="twitter:description" content="Saraçhane, polis ve protestocu arasındaki etkileşimi konu alan, sandbox tarzı bir hayatta kalma oyunudur.">
+    <meta name="twitter:image" content="https://i.hizliresim.com/evxqhuv.png">
+    <meta name="twitter:url" content="https://sarachane.vercel.app/">
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #1a1a1a; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: white; image-rendering: pixelated; -ms-interpolation-mode: nearest-neighbor; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; touch-action: none; }
+        canvas { display: block; image-rendering: pixelated; -ms-interpolation-mode: nearest-neighbor; }
+
+        #engelleyici, #olumEkrani { position: absolute; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.85); display: flex; justify-content: center; align-items: center; text-align: center; z-index: 100; pointer-events: none; flex-direction: column; }
+        #olumEkrani { background-color: rgba(100, 0, 0, 0.9); display: none; pointer-events: auto; }
+        #olumMesaji { font-size: 6em; color: #ffcccc; font-weight: bold; text-shadow: 3px 3px 8px black; margin-bottom: 40px; letter-spacing: 4px; animation: fadeInDeath 1s ease-out; }
+        @keyframes fadeInDeath { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+
+        #yenidenBaslatButonu { padding: 15px 35px; font-size: 1.5em; color: #fff; background: linear-gradient(145deg, #ff8800, #cc6000); border: none; border-radius: 5px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.3); transition: background 0.2s, transform 0.1s; font-weight: bold; }
+        #yenidenBaslatButonu:hover { background: linear-gradient(145deg, #ffa033, #e67e00); }
+        #yenidenBaslatButonu:active { transform: scale(0.98); box-shadow: 0 2px 3px rgba(0,0,0,0.3), inset 0 1px 1px rgba(0,0,0,0.2); }
+
+        #menuArayuzu { background-color: rgba(40, 40, 45, 0.97); padding: 40px 60px; border: 1px solid #666; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.7); max-width: 600px; pointer-events: auto; animation: fadeInMenu 0.5s ease-out; }
+         @keyframes fadeInMenu { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+
+        #menuArayuzu h1 { margin-top: 0; margin-bottom: 35px; font-size: 3.5em; color: #ffcc00; text-shadow: 2px 2px 5px rgba(0,0,0,0.8); letter-spacing: 3px; font-family: 'Impact', Haettenschweiler, 'Arial Narrow Bold', sans-serif; }
+        #menuArayuzu p { margin-bottom: 15px; font-size: 1em; color: #ccc; line-height: 1.5; }
+        .menu_butonu { display: block; width: 250px; margin: 20px auto; padding: 14px 25px; background: linear-gradient(145deg, #5a5a5a, #3a3a3a); color: white; border: none; border-radius: 5px; font-size: 1.3em; cursor: pointer; transition: background 0.2s, transform 0.1s; box-shadow: 0 3px 5px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.1); font-weight: bold; }
+        .menu_butonu:hover { background: linear-gradient(145deg, #6f6f6f, #4f4f4f); }
+        .menu_butonu:active { transform: scale(0.98); box-shadow: 0 1px 2px rgba(0,0,0,0.3), inset 0 1px 1px rgba(0,0,0,0.1); }
+
+         #ayarlarIcerigi { display: none; margin-top: 30px; padding: 25px; background-color: rgba(0,0,0,0.3); border-radius: 5px; text-align: left; border: 1px solid #555; }
+         #ayarlarIcerigi p { font-size: 0.95em; margin-bottom: 12px; color: #ddd; }
+         #ayarlarIcerigi strong { color: #fff; font-weight: 600; }
+         .ayar_ogesi { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 5px 0; }
+         .ayar_ogesi label { margin-right: 20px; color: #ccc; flex-shrink: 0; }
+         .ayar_ogesi input[type="range"] { flex-grow: 1; max-width: 220px; cursor: pointer; height: 8px; background: #555; border-radius: 4px; outline: none; -webkit-appearance: none; appearance: none; border: 1px solid black; }
+         .ayar_ogesi input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 16px; height: 16px; background: #bbb; border-radius: 50%; cursor: pointer; border: 1px solid black; box-shadow: 0 0 3px rgba(0,0,0,0.5); }
+         .ayar_ogesi input[type="range"]::-moz-range-thumb { width: 16px; height: 16px; background: #bbb; border-radius: 50%; cursor: pointer; border: 1px solid black; box-shadow: 0 0 3px rgba(0,0,0,0.5); }
+         .ayar_ogesi span { min-width: 45px; text-align: right; color: #eee; font-size: 0.9em; font-weight: bold; }
+         hr { border: none; border-top: 1px solid #555; margin: 25px 0; }
+         .gelistirici_notu { font-size: 0.8em; color: #999; margin-top: 25px; text-align: center; }
+
+        #bildirim { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); background-color: rgba(255, 180, 30, 0.95); color: black; padding: 10px 20px; border-radius: 5px; font-size: 1.1em; font-weight: bold; text-shadow: 1px 1px 0px rgba(255,255,255,0.6); display: none; z-index: 50; opacity: 0; transition: opacity 0.3s ease-out, top 0.3s ease-out; pointer-events: none; border: 1px solid black; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
+        #biberGaziKaplamasi { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(ellipse at center, rgba(255,180,50,0.1) 0%, rgba(255,165,0,0.6) 70%, rgba(220,120,0,0.8) 100%); opacity: 0; transition: opacity 0.2s ease-in-out; pointer-events: none; z-index: 10; display: none; }
+        .durum_cubuklari_kapsayici { position: absolute; bottom: 20px; left: 50%; width: 300px; transform: translateX(-50%); display: none; justify-content: space-between; pointer-events: none; z-index: 5; height: 18px; gap: 8px; }
+        .durum_cubugu_dis { height: 100%; width: calc(50% - 4px); background-color: rgba(20,20,20,0.85); border: 1px solid #888; border-radius: 3px; box-sizing: border-box; overflow: hidden; box-shadow: inset 0 1px 3px rgba(0,0,0,0.7); }
+        .durum_cubugu_ic { height: 100%; width: 100%; transition: width 0.15s linear; border-radius: 2px; }
+        #canCubuguIc { background: linear-gradient(to right, #e74c3c, #c0392b); }
+        #dayaniklilikCubuguIc { background: linear-gradient(to right, #f1c40f, #f39c12); }
+        #hasarKaplamasi { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(200, 0, 0, 0.5); opacity: 0; transition: opacity 0.05s ease-out; pointer-events: none; z-index: 9; display: none; }
+
+        #mobilKontroller {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 160px;
+            display: none;
+            pointer-events: none;
+            z-index: 20;
+        }
+        #joystickAlani {
+            position: absolute;
+            bottom: 25px;
+            left: 25px;
+            width: 120px;
+            height: 120px;
+            pointer-events: auto;
+        }
+        #joystickTabani {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(100, 100, 100, 0.3);
+            border-radius: 50%;
+            border: 2px solid rgba(200, 200, 200, 0.4);
+        }
+        #joystickCubugu {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background-color: rgba(200, 200, 200, 0.6);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        #kosuButonu {
+            position: absolute;
+            bottom: 35px;
+            right: 130px;
+            width: 80px;
+            height: 80px;
+            background-color: rgba(255, 165, 0, 0.5);
+            border-radius: 50%;
+            border: 2px solid rgba(255, 200, 100, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 1em;
+            font-weight: bold;
+            pointer-events: auto;
+            text-shadow: 1px 1px 2px black;
+            -webkit-tap-highlight-color: transparent;
+        }
+        #kosuButonu:active {
+            background-color: rgba(255, 140, 0, 0.7);
+        }
+        #ziplamaButonu {
+            position: absolute;
+            bottom: 35px;
+            right: 35px;
+            width: 80px;
+            height: 80px;
+            background-color: rgba(0, 150, 255, 0.5);
+            border-radius: 50%;
+            border: 2px solid rgba(100, 180, 255, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 1em;
+            font-weight: bold;
+            pointer-events: auto;
+            text-shadow: 1px 1px 2px black;
+            -webkit-tap-highlight-color: transparent;
+        }
+        #ziplamaButonu:active {
+            background-color: rgba(0, 120, 200, 0.7);
+        }
+
+        #yonlendirmeUyarisi { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.95); color: white; display: none; justify-content: center; align-items: center; text-align: center; z-index: 200; font-size: 1.2em; padding: 20px; box-sizing: border-box; }
+        #yonlendirmeUyarisi p { max-width: 80%; }
+    </style>
+</head>
+<body>
+    <div id="engelleyici" style="display: flex;">
+        <div id="menuArayuzu">
+            <h1>Saraçhane</h1>
+            <button id="baslatButonu" class="menu_butonu">Direnişe Katıl</button>
+            <button id="ayarlarButonu" class="menu_butonu">Ayarlar</button>
+            <div id="ayarlarIcerigi">
+                 <p><strong>Kontroller (PC):</strong></p>
+                 <p>W, S = İleri / Geri</p>
+                 <p>A, D = Sol / Sağ</p>
+                 <p>SPACE = Zıplama</p>
+                 <p>MOUSE = Bakış</p>
+                 <p>ESC = Duraklat / Menü</p>
+                 <p>SHIFT = Hızlı Koşma</p>
+                 <hr>
+                 <p><strong>Kontroller (Mobil):</strong></p>
+                 <p>Sol Joystick = Hareket</p>
+                 <p>Sağ Buton (Sarı) = Koşma</p>
+                 <p>Sağ Buton (Mavi) = Zıplama</p>
+                 <p>Ekranı Kaydır = Bakış</p>
+                 <hr>
+                 <p><strong>Oynanış:</strong></p>
+                 <div class="ayar_ogesi">
+                     <label for="kosmaKaydirici">Koşma Hızı:</label>
+                     <input type="range" id="kosmaKaydirici" min="1.5" max="3.0" step="0.1" value="1.8">
+                     <span id="kosmaHiziDegeri">1.8x</span>
+                 </div>
+                 <hr>
+                 <p>Polislerden ve biber gazından kaç!</p>
+            </div>
+             <p class="gelistirici_notu">Geliştiriciler: Teşkilatsız ve Saca</p>
+        </div>
+    </div>
+
+    <div id="olumEkrani" style="display: none;">
+        <div id="olumMesaji">YAKALANDIN</div>
+        <button id="yenidenBaslatButonu">Yeniden Başla</button>
+    </div>
+
+    <div id="bildirim" style="display: none;"></div>
+    <div class="durum_cubuklari_kapsayici" style="display: none;">
+        <div id="canCubuguDis" class="durum_cubugu_dis"><div id="canCubuguIc" class="durum_cubugu_ic"></div></div>
+        <div id="dayaniklilikCubuguDis" class="durum_cubugu_dis"><div id="dayaniklilikCubuguIc" class="durum_cubugu_ic"></div></div>
+    </div>
+    <div id="hasarKaplamasi" style="display: none;"></div>
+    <div id="biberGaziKaplamasi" style="display: none;"></div>
+
+    <canvas id="oyunAlani"></canvas>
+
+    <div id="mobilKontroller">
+        <div id="joystickAlani">
+            <div id="joystickTabani"></div>
+            <div id="joystickCubugu"></div>
+        </div>
+        <div id="kosuButonu">Koş</div>
+        <div id="ziplamaButonu">Zıpla</div>
+    </div>
+
+    <div id="yonlendirmeUyarisi">
+        <p>Lütfen cihazınızı yatay konuma çevirerek oynayın.</p>
+    </div>
+
+    <audio id="gazFirlatmaSesi" src="sesler/gaz_firlatma.wav" preload="auto"></audio>
+    <audio id="gazTislamaSesi" src="sesler/gaz_tislama.wav" preload="auto"></audio>
+    <audio id="silahAtesSesi" src="sesler/silah_ates.wav" preload="auto"></audio>
+    <audio id="mermiCarpmaSesi" src="sesler/mermi_carpma.wav" preload="auto"></audio>
+    <audio id="mermiViziltiSesi" src="sesler/mermi_vizilti.wav" preload="auto"></audio>
+    <audio id="oyuncuHasarSesi" src="sesler/oyuncu_hasar.wav" preload="auto"></audio>
+    <audio id="polisHasarSesi" src="sesler/polis_hasar.wav" preload="auto"></audio>
+    <audio id="olumSesi" src="sesler/olum.wav" preload="auto"></audio>
+
+    <script type="importmap">{"imports": {"three": "https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"}}</script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
+
+        const CHUNK_SIZE = 16; const CHUNK_HEIGHT = 32; const WORLD_HEIGHT_VARIATION = 3;
+        const NOISE_SCALE_GROUND = 0.1; const NOISE_SCALE_BUILDING = 0.12; const NOISE_SCALE_FOREST = 0.05;
+        const RENDER_DISTANCE = 3; const PLAYER_HEIGHT = 1.6; const PLAYER_RADIUS = 0.35;
+        const GRAVITY = -28; const JUMP_VELOCITY = 8.5; const MOVE_SPEED = 5.0;
+        const SPRINT_MULTIPLIER_DEFAULT = 1.7;
+        const COLLISION_EPSILON = 0.001;
+        const MAX_HEALTH = 100; const MAX_STAMINA = 100;
+        const STAMINA_DRAIN_RATE = 20; const STAMINA_REGEN_RATE = 10;
+        const STAMINA_HEALTH_DRAIN_RATE = 7; const HEALTH_REGEN_RATE = 0.2;
+        const HEALTH_REGEN_DELAY = 8; const MAX_POLICE = 12; const POLICE_SPAWN_CHANCE = 0.006;
+        const POLICE_DETECT_RANGE = 22; const POLICE_ATTACK_RANGE_GAS = 14;
+        const POLICE_ATTACK_RANGE_BULLET = 18; const POLICE_MOVE_SPEED = 4.0;
+        const POLICE_ATTACK_COOLDOWN_GAS = 4.0; const POLICE_ATTACK_COOLDOWN_BULLET = 1.8;
+        const PEPPER_SPRAY_DURATION = 4.5; const PEPPER_GAS_CLOUD_SIZE = 2.2;
+        const PROJECTILE_MAX_LIFETIME = 4.0;
+        const GAS_CAPSULE_SPEED = 20; const BULLET_SPEED = 50;
+        const BLOOD_PARTICLE_COUNT = 20;
+        const GAS_PARTICLE_COUNT = 100;
+        const SPRINT_FOV_INCREASE = 5;
+        const LOOK_SENSITIVITY = 0.0025;
+        const POLICE_DAMAGE = { PEPPER_SPRAY_IMPACT: 1, PEPPER_SPRAY_DOT: 1.0, PLASTIC_BULLET: 9 };
+        const PROJECTILE_TYPES = { GAS_CAPSULE: 1, POLICE_BULLET: 6 };
+        const BLOCK_TYPES = { AIR: 0, ASPHALT: 10, SIDEWALK: 11, BUILDING_WALL_GRAY: 12, BUILDING_WALL_BRICK: 13, WINDOW: 14, PARK_GRASS: 15, METAL_FENCE: 16, DEBRIS: 17, CAR_BODY_WHITE: 18, CAR_BODY_BLUE: 19, CAR_WHEEL: 20, LAMP_POST: 21, POLICE_CAR_BODY: 22, POLICE_CAR_LIGHT_RED: 23, POLICE_CAR_LIGHT_BLUE: 24, TREE_TRUNK: 25, TREE_LEAVES: 26, POLICE_BARRIER: 27 };
+        const BLOCK_COLORS = {[BLOCK_TYPES.ASPHALT]:{top:0x303030,side:0x252525,bottom:0x252525},[BLOCK_TYPES.SIDEWALK]:{top:0x9a9a9a,side:0x888888,bottom:0x888888},[BLOCK_TYPES.BUILDING_WALL_GRAY]:{top:0x858585,side:0x7a7a7a,bottom:0x7a7a7a},[BLOCK_TYPES.BUILDING_WALL_BRICK]:{top:0xa86048,side:0x985038,bottom:0x985038},[BLOCK_TYPES.WINDOW]:{top:0x5080cc,side:0x4070bb,bottom:0x4070bb},[BLOCK_TYPES.PARK_GRASS]:{top:0x408840,side:0x486838,bottom:0x486838},[BLOCK_TYPES.METAL_FENCE]:{top:0x666666,side:0x666666,bottom:0x666666},[BLOCK_TYPES.DEBRIS]:{top:0x555044,side:0x4a453a,bottom:0x4a453a},[BLOCK_TYPES.CAR_BODY_WHITE]:{top:0xcccccc,side:0xbbbbbb,bottom:0xbbbbbb},[BLOCK_TYPES.CAR_BODY_BLUE]:{top:0x3333cc,side:0x2222aa,bottom:0x2222aa},[BLOCK_TYPES.CAR_WHEEL]:{top:0x151515,side:0x101010,bottom:0x101010},[BLOCK_TYPES.LAMP_POST]:{top:0x777777,side:0x666666,bottom:0x666666},[BLOCK_TYPES.POLICE_CAR_BODY]:{top:0x2040cc,side:0x1030aa,bottom:0x1030aa}, [BLOCK_TYPES.POLICE_CAR_LIGHT_RED]:{top:0xff0000,side:0xcc0000,bottom:0xcc0000},[BLOCK_TYPES.POLICE_CAR_LIGHT_BLUE]:{top:0x0080ff,side:0x0060dd,bottom:0x0060dd}, [BLOCK_TYPES.TREE_TRUNK]: { top: 0x6B4423, side: 0x80512B, bottom: 0x6B4423 }, [BLOCK_TYPES.TREE_LEAVES]: { top: 0x228B22, side: 0x3CB371, bottom: 0x2E8B57 }, [BLOCK_TYPES.POLICE_BARRIER]: { top: 0xFFD700, side: 0xE6C200, bottom: 0xE6C200 }};
+        const PerlinNoise = new (function() { this.p=new Uint8Array(512);this.permutation=[151,160,137,91,90,15,131,13,201,95,96,53,194,233,7,225,140,36,103,30,69,142,8,99,37,240,21,10,23,190,6,148,247,120,234,75,0,26,197,62,94,252,219,203,117,35,11,32,57,177,33,88,237,149,56,87,174,20,125,136,171,168,68,175,74,165,71,134,139,48,27,166,77,146,158,231,83,111,229,122,60,211,133,230,220,105,92,41,55,46,245,40,244,102,143,54,65,25,63,161,1,216,80,73,209,76,132,187,208,89,18,169,200,196,135,130,116,188,159,86,164,100,109,198,173,186,3,64,52,217,226,250,124,123,5,202,38,147,118,126,255,82,85,212,207,206,59,227,47,16,58,17,182,189,28,42,223,183,170,213,119,248,152,2,44,154,163,70,221,153,101,155,167,43,172,9,129,22,39,253,19,98,108,110,79,113,224,232,178,185,112,104,218,246,97,228,251,34,242,193,238,210,144,12,191,179,162,241,81,51,145,235,249,14,239,107,49,192,214,31,181,199,106,157,184,84,204,176,115,121,50,45,127,4,150,254,138,236,205,93,222,114,67,29,24,72,243,141,128,195,78,66,215,61,156,180];for(let i=0;i<256;i++)this.p[256+i]=this.p[i]=this.permutation[i];this.fade=function(t){return t*t*t*(t*(t*6-15)+10)};this.lerp=function(t,a,b){return a+t*(b-a)};this.grad=function(h,x,y,z){let H=h&15,u=H<8?x:y,v=H<4?y:H==12||H==14?x:z;return((H&1)==0?u:-u)+((H&2)==0?v:-v)};this.noise=function(x,y,z){let X=Math.floor(x)&255,Y=Math.floor(y)&255,Z=Math.floor(z)&255;x-=Math.floor(x);y-=Math.floor(y);z-=Math.floor(z);let u=this.fade(x),v=this.fade(y),w=this.fade(z),A=this.p[X]+Y,AA=this.p[A]+Z,AB=this.p[A+1]+Z,B=this.p[X+1]+Y,BA=this.p[B]+Z,BB=this.p[B+1]+Z;return this.lerp(w,this.lerp(v,this.lerp(u,this.grad(this.p[AA],x,y,z),this.grad(this.p[BA],x-1,y,z)),this.lerp(u,this.grad(this.p[AB],x,y-1,z),this.grad(this.p[BB],x-1,y-1,z))),this.lerp(v,this.lerp(u,this.grad(this.p[AA+1],x,y,z-1),this.grad(this.p[BA+1],x-1,y,z-1)),this.lerp(u,this.grad(this.p[AB+1],x,y-1,z-1),this.grad(this.p[BB+1],x-1,y-1,z-1))))}})();
+
+        let scene, camera, renderer, controls; let world = {}; let material;
+        let playerVelocity = new THREE.Vector3(); let playerOnGround = false;
+        let clock = new THREE.Clock(); let keys = {}; let isSprinting = false;
+        let sprintMultiplier = SPRINT_MULTIPLIER_DEFAULT; let targetFov; let originalFov;
+        let windLinesMesh = null; let chunksToGenerate = []; let chunksToRemove = [];
+        const raycaster = new THREE.Raycaster(); const mouse = new THREE.Vector2();
+        let activeParticles = []; let gasClouds = []; let gameState = 'MENU';
+        const BASE_CITY_Y = Math.floor(CHUNK_HEIGHT / 4);
+        let menuCameraAnimation = { active: true, initialPosition: new THREE.Vector3(CHUNK_SIZE / 2, BASE_CITY_Y + 20, CHUNK_SIZE * 1.5), lookAtTarget: new THREE.Vector3(CHUNK_SIZE / 2, BASE_CITY_Y + 3, CHUNK_SIZE / 2) };
+        let policeEntities = []; let projectiles = []; let nextEntityId = 0;
+        let playerHealth = MAX_HEALTH; let playerStamina = MAX_STAMINA; let lastDamageTime = -Infinity;
+        let isMobile = false;
+        let joystickActive = false; let joystickStartX = 0; let joystickStartY = 0; let joystickDeltaX = 0; let joystickDeltaY = 0; let joystickMagnitude = 0; let joystickCurrentTouchId = null;
+        const joystickMaxDistance = 40;
+        let lookActive = false; let lookStartX = 0; let lookStartY = 0; let lookCurrentTouchId = null;
+        const euler = new THREE.Euler(0, 0, 0, 'YXZ');
+        const PI_2 = Math.PI / 2;
+
+        const engelleyici = document.getElementById('engelleyici'); const menuArayuzu = document.getElementById('menuArayuzu'); const olumEkrani = document.getElementById('olumEkrani'); const olumMesaji = document.getElementById('olumMesaji'); const yenidenBaslatButonu = document.getElementById('yenidenBaslatButonu'); const baslatButonu = document.getElementById('baslatButonu'); const ayarlarButonu = document.getElementById('ayarlarButonu'); const ayarlarIcerigi = document.getElementById('ayarlarIcerigi');
+        const bildirimUI = document.getElementById('bildirim'); const kosmaKaydirici = document.getElementById('kosmaKaydirici'); const kosmaHiziDegeriUI = document.getElementById('kosmaHiziDegeri'); const canCubuguIc = document.getElementById('canCubuguIc'); const dayaniklilikCubuguIc = document.getElementById('dayaniklilikCubuguIc'); const hasarKaplamasi = document.getElementById('hasarKaplamasi'); const biberGaziKaplamasi = document.getElementById('biberGaziKaplamasi');
+        const mobilKontroller = document.getElementById('mobilKontroller'); const joystickAlani = document.getElementById('joystickAlani'); const joystickTabani = document.getElementById('joystickTabani'); const joystickCubugu = document.getElementById('joystickCubugu'); const kosuButonu = document.getElementById('kosuButonu');
+        const ziplamaButonu = document.getElementById('ziplamaButonu');
+        const yonlendirmeUyarisi = document.getElementById('yonlendirmeUyarisi');
+        const oyunAlaniCanvas = document.getElementById('oyunAlani');
+
+        const gazFirlatmaSesi = document.getElementById('gazFirlatmaSesi'); const gazTislamaSesi = document.getElementById('gazTislamaSesi'); const silahAtesSesi = document.getElementById('silahAtesSesi'); const mermiCarpmaSesi = document.getElementById('mermiCarpmaSesi'); const mermiViziltiSesi = document.getElementById('mermiViziltiSesi'); const oyuncuHasarSesi = document.getElementById('oyuncuHasarSesi'); const polisHasarSesi = document.getElementById('polisHasarSesi'); const olumSesi = document.getElementById('olumSesi');
+
+        const policeMaterials = { body: new THREE.MeshStandardMaterial({ color: 0x203060, roughness: 0.8, name: 'police_body' }), vest: new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.7, name: 'police_vest' }), helmet: new THREE.MeshStandardMaterial({ color: 0x151515, roughness: 0.6, name: 'police_helmet' }), skin: new THREE.MeshStandardMaterial({ color: 0xffdba1, roughness: 0.8, name: 'police_skin' }) };
+        const projectileMaterials = { [PROJECTILE_TYPES.GAS_CAPSULE]: new THREE.MeshStandardMaterial({ color: 0x555555, metalness: 0.6, roughness: 0.5 }), [PROJECTILE_TYPES.POLICE_BULLET]: new THREE.MeshBasicMaterial({ color: 0x000000 }) };
+        const gasCloudMaterial = new THREE.PointsMaterial({ color: 0xb0b0b0, size: 0.3, transparent: true, opacity: 0.5, sizeAttenuation: true, depthWrite: false, blending: THREE.NormalBlending });
+
+
+        function detectMobile() {
+            isMobile = 'ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0;
+            mobilKontroller.style.display = isMobile ? 'block' : 'none';
+        }
+        function checkOrientation() {
+            if (isMobile) {
+                yonlendirmeUyarisi.style.display = window.innerHeight > window.innerWidth ? 'flex' : 'none';
+            } else {
+                yonlendirmeUyarisi.style.display = 'none';
+            }
+        }
+
+        function init() {
+             try {
+                 detectMobile(); checkOrientation();
+                 scene = new THREE.Scene(); scene.background = new THREE.Color(0x6699CC); scene.fog = new THREE.Fog(0x6699CC, RENDER_DISTANCE * CHUNK_SIZE * 0.4, RENDER_DISTANCE * CHUNK_SIZE * 1.0);
+                 camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, RENDER_DISTANCE * CHUNK_SIZE * 1.1); originalFov = camera.fov; targetFov = originalFov;
+
+                 if (!oyunAlaniCanvas) {
+                    throw new Error("Oyun alanı için <canvas id='oyunAlani'> elementi bulunamadı!");
+                 }
+
+                 renderer = new THREE.WebGLRenderer({ canvas: oyunAlaniCanvas, antialias: false }); renderer.setSize(window.innerWidth, window.innerHeight); renderer.setPixelRatio(window.devicePixelRatio); renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+                 scene.add(new THREE.HemisphereLight(0xaaaaaa, 0x444444, 0.8));
+                 const dL = new THREE.DirectionalLight(0xffffff, 1.2);
+                 dL.position.set(40, 60, 25);
+                 dL.castShadow = true;
+                 dL.shadow.mapSize.width = 1024;
+                 dL.shadow.mapSize.height = 1024;
+                 dL.shadow.camera.near = 10;
+                 dL.shadow.camera.far = 150;
+                 const shadowCamSize = RENDER_DISTANCE * CHUNK_SIZE * 0.7;
+                 dL.shadow.camera.left = -shadowCamSize;
+                 dL.shadow.camera.right = shadowCamSize;
+                 dL.shadow.camera.top = shadowCamSize;
+                 dL.shadow.camera.bottom = -shadowCamSize;
+                 dL.shadow.bias = -0.002;
+                 scene.add(dL);
+
+                 material = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.9, metalness: 0.05 });
+
+                 setupControls();
+                 setupMobileControls();
+                 setupMenu();
+                 setupSprintUI();
+                 createWindLines();
+
+                 yenidenBaslatButonu.addEventListener('click', restartGame);
+                 window.addEventListener('resize', ()=>{ onWindowResize(); checkOrientation(); });
+                 window.addEventListener('orientationchange', checkOrientation);
+                 document.addEventListener('keydown', handleKeyDown);
+                 document.addEventListener('keyup', (event) => { keys[event.code] = false; handleKeyUp(event); });
+
+                 showMenu();
+                 preloadInitialChunks();
+                 animate();
+
+             } catch (error) {
+                 console.error("Başlatma sırasında kritik hata:", error);
+                 engelleyici.style.display = 'flex';
+                 menuArayuzu.innerHTML = `<h1>HATA!</h1><p>Oyun başlatılamadı.</p><p style="font-size:0.8em; color: #ffaaaa;">Detaylar için konsolu (F12) kontrol edin.</p><p style="font-size:0.7em; color:#aaa;">${error.message}</p>`;
+                 olumEkrani.style.display = 'none';
+                 const sBC = document.querySelector('.durum_cubuklari_kapsayici');
+                 if (sBC) sBC.style.display = 'none';
+                 yonlendirmeUyarisi.style.display = 'none';
+                 if (renderer) renderer.dispose();
+             }
+        }
+
+        function preloadInitialChunks() {
+            const preloadRadius = 2;
+            let generatedCount = 0;
+            for (let x = -preloadRadius; x <= preloadRadius; x++) {
+                for (let z = -preloadRadius; z <= preloadRadius; z++) {
+                    if (!world[getChunkKey(x, z)]) {
+                        generateChunkData(x, z);
+                        generatedCount++;
+                    }
+                }
+            }
+        }
+
+        function setupMenu() {
+            baslatButonu.addEventListener('click', startGame);
+            ayarlarButonu.addEventListener('click', toggleSettings);
+        }
+
+        function startGame() {
+             if (isMobile && window.innerHeight > window.innerWidth) {
+                 checkOrientation();
+                 return;
+             }
+
+             const resuming = gameState === 'PAUSED';
+             gameState = 'PLAYING';
+             olumEkrani.style.display = 'none';
+             menuCameraAnimation.active = false;
+             engelleyici.style.display = 'none';
+             const sBC = document.querySelector('.durum_cubuklari_kapsayici');
+             if (sBC) sBC.style.display = 'flex';
+             bildirimUI.style.display = 'none';
+
+             if (!resuming) {
+                 resetGameSate();
+             }
+
+             camera.fov = originalFov;
+             camera.updateProjectionMatrix();
+             targetFov = originalFov;
+             keys = {};
+             isSprinting = false;
+
+             joystickActive = false;
+             joystickDeltaX = 0; joystickDeltaY = 0; joystickMagnitude = 0;
+             if(joystickCubugu) joystickCubugu.style.transform = `translate(-50%, -50%) translate(0px, 0px)`;
+             lookActive = false;
+             lookCurrentTouchId = null;
+             joystickCurrentTouchId = null;
+
+             if (!isMobile && controls && !controls.isLocked) {
+                 try {
+                     controls.lock();
+                 } catch(e) {
+                     showNotification("Oyuna tıklayarak kontrolü etkinleştirin.");
+                 }
+             }
+        }
+
+        function resetGameSate() {
+             let startY = getSurfaceHeight(CHUNK_SIZE/2, CHUNK_SIZE/2) + PLAYER_HEIGHT/2 + 0.1;
+             let tries = 0;
+             while(getBlock(CHUNK_SIZE/2, Math.floor(startY - PLAYER_HEIGHT/2 + 0.1), CHUNK_SIZE/2) !== BLOCK_TYPES.AIR && tries < 10){
+                 startY += 1;
+                 tries++;
+             }
+             if(startY >= CHUNK_HEIGHT - 1) startY = BASE_CITY_Y + PLAYER_HEIGHT/2 + 2;
+             const startPos = new THREE.Vector3(CHUNK_SIZE/2 + (Math.random()-0.5)*2, startY, CHUNK_SIZE/2 + (Math.random()-0.5)*2);
+             camera.position.copy(startPos);
+
+             euler.set(0, 0, 0);
+             camera.quaternion.setFromEuler(euler);
+
+             if(controls && controls.getObject()){
+                 controls.getObject().position.copy(startPos);
+             }
+
+             playerVelocity.set(0, 0, 0);
+             playerHealth = MAX_HEALTH;
+             playerStamina = MAX_STAMINA;
+             lastDamageTime = -Infinity;
+
+             policeEntities.forEach(p => { if(p.mesh) scene.remove(p.mesh); });
+             policeEntities = [];
+             projectiles.forEach(p => { if(p.mesh) scene.remove(p.mesh); });
+             projectiles = [];
+             activeParticles.forEach(p => { if(p){ scene.remove(p); p.geometry?.dispose(); p.material?.dispose(); } });
+             activeParticles = [];
+             gasClouds.forEach(c => { if(c.mesh) scene.remove(c.mesh); });
+             gasClouds = [];
+
+             updateHealthStaminaUI();
+             stopPepperSprayScreenEffect();
+             hasarKaplamasi.style.display = 'none';
+        }
+
+        function showMenu() {
+             gameState = 'MENU';
+             menuCameraAnimation.active = true;
+             olumEkrani.style.display = 'none';
+             engelleyici.style.display = 'flex';
+             const sBC = document.querySelector('.durum_cubuklari_kapsayici');
+             if (sBC) sBC.style.display = 'none';
+             bildirimUI.style.display = 'none';
+             ayarlarIcerigi.style.display = 'none';
+
+             if (controls && controls.isLocked) {
+                 controls.unlock();
+             }
+             isSprinting = false;
+             if (windLinesMesh) windLinesMesh.visible = false;
+
+             camera.position.copy(menuCameraAnimation.initialPosition);
+             camera.lookAt(menuCameraAnimation.lookAtTarget);
+             camera.fov = originalFov;
+             camera.updateProjectionMatrix();
+
+             checkOrientation();
+        }
+
+        function toggleSettings() {
+            ayarlarIcerigi.style.display = ayarlarIcerigi.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function pauseGame() {
+             if(gameState !== 'PLAYING') return;
+
+             gameState = 'PAUSED';
+             olumEkrani.style.display = 'none';
+             engelleyici.style.display = 'flex';
+
+             const sBC = document.querySelector('.durum_cubuklari_kapsayici');
+             if(sBC) sBC.style.display = 'none';
+             bildirimUI.style.display = 'none';
+             ayarlarIcerigi.style.display = 'none';
+
+             isSprinting = false;
+             if(windLinesMesh) windLinesMesh.visible = false;
+             targetFov = originalFov;
+             camera.fov = originalFov;
+             camera.updateProjectionMatrix();
+
+             if(controls && controls.isLocked){
+                 controls.unlock();
+             }
+             joystickActive = false;
+             joystickDeltaX = 0; joystickDeltaY = 0; joystickMagnitude = 0;
+             if(joystickCubugu) joystickCubugu.style.transform = `translate(-50%, -50%) translate(0px, 0px)`;
+             lookActive = false;
+        }
+
+        function restartGame() {
+            showMenu();
+        }
+
+        function setupControls() {
+            if(isMobile || typeof PointerLockControls === 'undefined') return;
+
+             try {
+                controls = new PointerLockControls(camera, document.body);
+
+                const blockerElement = document.getElementById('engelleyici');
+                const menuElement = document.getElementById('menuArayuzu');
+                const deathScreenElement = document.getElementById('olumEkrani');
+
+                document.body.addEventListener('click', (event) => {
+                    if (gameState === 'PLAYING' && controls && !controls.isLocked) {
+                         if (!menuElement.contains(event.target) && !deathScreenElement.contains(event.target) && blockerElement.style.display === 'none') {
+                            try {
+                                controls.lock();
+                            } catch(err){
+                                showNotification("Kontrolü etkinleştirmek için tekrar tıklayın.");
+                            }
+                         }
+                    }
+                });
+
+                controls.addEventListener('lock', () => {
+                    if (gameState === 'PLAYING') {
+                        blockerElement.style.display = 'none';
+                        const sBC = document.querySelector('.durum_cubuklari_kapsayici');
+                        if(sBC) sBC.style.display = 'flex';
+                        keys = {};
+                    } else {
+                        controls.unlock();
+                    }
+                });
+
+                controls.addEventListener('unlock', () => {
+                    if (gameState === 'PLAYING') {
+                        pauseGame();
+                    }
+                });
+
+                scene.add(controls.getObject());
+
+             } catch(e) {
+                 controls = null;
+                 showNotification("Fare kontrolü yüklenemedi.");
+             }
+        }
+
+        function setupMobileControls() {
+            if (!isMobile) return;
+
+            joystickAlani.addEventListener('touchstart', handleJoystickStart, { passive: false });
+            joystickAlani.addEventListener('touchmove', handleJoystickMove, { passive: false });
+            joystickAlani.addEventListener('touchend', handleJoystickEnd, { passive: false });
+            joystickAlani.addEventListener('touchcancel', handleJoystickEnd, { passive: false });
+
+            kosuButonu.addEventListener('touchstart', handleSprintStart, { passive: false });
+            kosuButonu.addEventListener('touchend', handleSprintEnd, { passive: false });
+            kosuButonu.addEventListener('touchcancel', handleSprintEnd, { passive: false });
+
+            ziplamaButonu.addEventListener('touchstart', handleJumpPress, { passive: false });
+
+            document.body.addEventListener('touchstart', handleLookStart, { passive: false });
+            document.body.addEventListener('touchmove', handleLookMove, { passive: false });
+            document.body.addEventListener('touchend', handleLookEnd, { passive: false });
+            document.body.addEventListener('touchcancel', handleLookEnd, { passive: false });
+        }
+
+        function handleJoystickStart(e) {
+            if (gameState !== 'PLAYING') return;
+            e.preventDefault();
+            if (joystickCurrentTouchId === null && e.changedTouches.length > 0) {
+                const touch = e.changedTouches[0];
+                if(lookCurrentTouchId === touch.identifier) return;
+
+                joystickCurrentTouchId = touch.identifier;
+                joystickActive = true;
+                const rect = joystickAlani.getBoundingClientRect();
+                joystickStartX = rect.left + rect.width / 2;
+                joystickStartY = rect.top + rect.height / 2;
+                handleJoystickMove(e);
+            }
+        }
+        function handleJoystickMove(e) {
+            if (!joystickActive || gameState !== 'PLAYING') return;
+            e.preventDefault();
+            let touch = null;
+            for(let i=0; i < e.changedTouches.length; i++){
+                if(e.changedTouches[i].identifier === joystickCurrentTouchId){
+                    touch = e.changedTouches[i];
+                    break;
+                }
+            }
+            if(!touch) return;
+
+            const currentX = touch.clientX;
+            const currentY = touch.clientY;
+            let deltaXRaw = currentX - joystickStartX;
+            let deltaYRaw = currentY - joystickStartY;
+            const distance = Math.sqrt(deltaXRaw*deltaXRaw + deltaYRaw*deltaYRaw);
+
+            let clampedX = deltaXRaw;
+            let clampedY = deltaYRaw;
+
+            if (distance > joystickMaxDistance) {
+                clampedX = (deltaXRaw / distance) * joystickMaxDistance;
+                clampedY = (deltaYRaw / distance) * joystickMaxDistance;
+            }
+
+            joystickDeltaX = clampedX / joystickMaxDistance;
+            joystickDeltaY = clampedY / joystickMaxDistance;
+            joystickMagnitude = Math.min(1, distance / joystickMaxDistance);
+
+            if(joystickCubugu) {
+                joystickCubugu.style.transform = `translate(-50%, -50%) translate(${clampedX}px, ${clampedY}px)`;
+            }
+        }
+        function handleJoystickEnd(e) {
+            if (!joystickActive || gameState !== 'PLAYING') return;
+            let touchEnded = false;
+            for(let i=0; i < e.changedTouches.length; i++){
+                if(e.changedTouches[i].identifier === joystickCurrentTouchId){
+                    touchEnded = true;
+                    break;
+                }
+            }
+
+            if(touchEnded){
+                e.preventDefault();
+                joystickActive = false;
+                joystickDeltaX = 0;
+                joystickDeltaY = 0;
+                joystickMagnitude = 0;
+                joystickCurrentTouchId = null;
+                if(joystickCubugu) {
+                    joystickCubugu.style.transform = `translate(-50%, -50%) translate(0px, 0px)`;
+                }
+            }
+        }
+        function handleSprintStart(e) {
+            if(gameState !== 'PLAYING') return;
+            e.preventDefault();
+            if (playerStamina > 0) {
+                isSprinting = true;
+                targetFov = originalFov + SPRINT_FOV_INCREASE;
+            }
+        }
+        function handleSprintEnd(e) {
+            if(gameState !== 'PLAYING') return;
+            e.preventDefault();
+            isSprinting = false;
+            targetFov = originalFov;
+        }
+
+        function handleJumpPress(e) {
+            if (gameState !== 'PLAYING') return;
+            e.preventDefault();
+
+            if (playerOnGround) {
+                playerVelocity.y = JUMP_VELOCITY;
+                playerOnGround = false;
+            }
+        }
+
+        function handleLookStart(e){
+            if (gameState !== 'PLAYING' || !isMobile || lookActive) return;
+
+            const touch = e.changedTouches[0];
+            if (!touch) return;
+
+            const targetElement = touch.target;
+            if (joystickAlani.contains(targetElement) || kosuButonu.contains(targetElement) || ziplamaButonu.contains(targetElement)) {
+                return;
+            }
+            if (joystickCurrentTouchId === touch.identifier) return;
+
+            if (lookCurrentTouchId === null) {
+                lookCurrentTouchId = touch.identifier;
+                lookActive = true;
+                lookStartX = touch.clientX;
+                lookStartY = touch.clientY;
+                e.preventDefault();
+            }
+        }
+        function handleLookMove(e){
+            if (!lookActive || gameState !== 'PLAYING') return;
+
+            let touch = null;
+            for(let i=0; i<e.changedTouches.length; i++){
+                if(e.changedTouches[i].identifier === lookCurrentTouchId){
+                    touch = e.changedTouches[i];
+                    break;
+                }
+            }
+            if(!touch) return;
+
+            e.preventDefault();
+
+            const currentX = touch.clientX;
+            const currentY = touch.clientY;
+            const deltaX = currentX - lookStartX;
+            const deltaY = currentY - lookStartY;
+
+            euler.setFromQuaternion(camera.quaternion);
+            euler.y -= deltaX * LOOK_SENSITIVITY;
+            euler.x -= deltaY * LOOK_SENSITIVITY;
+            euler.x = Math.max(-PI_2, Math.min(PI_2, euler.x));
+            camera.quaternion.setFromEuler(euler);
+
+            lookStartX = currentX;
+            lookStartY = currentY;
+        }
+        function handleLookEnd(e){
+            if (!lookActive || gameState !== 'PLAYING') return;
+
+            let touchEnded = false;
+            for(let i=0; i<e.changedTouches.length; i++){
+                if(e.changedTouches[i].identifier === lookCurrentTouchId){
+                    touchEnded = true;
+                    break;
+                }
+            }
+
+            if(touchEnded){
+                e.preventDefault();
+                lookActive = false;
+                lookCurrentTouchId = null;
+            }
+        }
+
+        function handleKeyDown(event) {
+            if(isMobile && event.code !== 'Escape') return;
+
+            keys[event.code] = true;
+
+            if(event.code !== 'Escape' && (gameState !== 'PLAYING' || playerHealth <= 0)){
+                return;
+            }
+
+            if(event.code === 'ShiftLeft' || event.code === 'ShiftRight'){
+                if(!isSprinting && playerStamina > 0 && playerOnGround){
+                    isSprinting = true;
+                    targetFov = originalFov + SPRINT_FOV_INCREASE;
+                }
+            }
+
+
+            if(event.code === 'Escape'){
+                if(gameState === 'PLAYING'){
+                    pauseGame();
+                } else if(gameState === 'PAUSED'){
+                    startGame();
+                }
+            }
+        }
+        function handleKeyUp(event) {
+            if(isMobile) return;
+
+            keys[event.code] = false;
+
+            if(event.code === 'ShiftLeft' || event.code === 'ShiftRight'){
+                if(!keys['ShiftLeft'] && !keys['ShiftRight']){
+                    isSprinting = false;
+                    targetFov = originalFov;
+                }
+            }
+        }
+
+        function worldToChunkCoords(x, y, z){
+            const chunkX = Math.floor(x / CHUNK_SIZE);
+            const chunkZ = Math.floor(z / CHUNK_SIZE);
+            const localX = THREE.MathUtils.euclideanModulo(x, CHUNK_SIZE);
+            const localY = Math.floor(y);
+            const localZ = THREE.MathUtils.euclideanModulo(z, CHUNK_SIZE);
+            return { chunkX, chunkZ, localX, localY, localZ };
+        }
+        function getChunkKey(chunkX, chunkZ){
+            return `${chunkX},${chunkZ}`;
+        }
+        function getBlockIndex(localX, localY, localZ){
+            if(localX < 0 || localX >= CHUNK_SIZE || localY < 0 || localY >= CHUNK_HEIGHT || localZ < 0 || localZ >= CHUNK_SIZE) {
+                return -1;
+            }
+            return localY * CHUNK_SIZE * CHUNK_SIZE + localZ * CHUNK_SIZE + localX;
+        }
+        function getBlock(worldX, worldY, worldZ){
+            const { chunkX, chunkZ, localX, localY, localZ } = worldToChunkCoords(worldX, worldY, worldZ);
+            const key = getChunkKey(chunkX, chunkZ);
+            const chunk = world[key];
+
+            if(!chunk || !chunk.blocks || localY < 0 || localY >= CHUNK_HEIGHT) {
+                return localY < BASE_CITY_Y - 5 ? BLOCK_TYPES.BUILDING_WALL_GRAY : BLOCK_TYPES.AIR;
+            }
+
+            const index = getBlockIndex(localX, localY, localZ);
+            return index === -1 ? BLOCK_TYPES.AIR : chunk.blocks[index];
+        }
+        function setBlock(worldX, worldY, worldZ, blockType){
+            const { chunkX, chunkZ, localX, localY, localZ } = worldToChunkCoords(worldX, worldY, worldZ);
+            const key = getChunkKey(chunkX, chunkZ);
+            const chunk = world[key];
+
+            if(!chunk || !chunk.blocks || localY < 0 || localY >= CHUNK_HEIGHT) {
+                return;
+            }
+
+            const index = getBlockIndex(localX, localY, localZ);
+            if(index === -1) return;
+
+            if(chunk.blocks[index] !== blockType){
+                chunk.blocks[index] = blockType;
+                scheduleChunkMeshUpdate(chunkX, chunkZ);
+                if(localX === 0) scheduleChunkMeshUpdate(chunkX - 1, chunkZ);
+                if(localX === CHUNK_SIZE - 1) scheduleChunkMeshUpdate(chunkX + 1, chunkZ);
+                if(localZ === 0) scheduleChunkMeshUpdate(chunkX, chunkZ - 1);
+                if(localZ === CHUNK_SIZE - 1) scheduleChunkMeshUpdate(chunkX, chunkZ + 1);
+            }
+        }
+        const scheduledMeshUpdates = new Set();
+        function scheduleChunkMeshUpdate(chunkX, chunkZ){
+            const key = getChunkKey(chunkX, chunkZ);
+            if(world[key] && !scheduledMeshUpdates.has(key)) {
+                scheduledMeshUpdates.add(key);
+            }
+        }
+        function processChunkMeshUpdates(){
+            if(scheduledMeshUpdates.size === 0) return;
+
+            const updatesToProcess = Array.from(scheduledMeshUpdates);
+            scheduledMeshUpdates.clear();
+
+            updatesToProcess.forEach(key => {
+                const [chunkX, chunkZ] = key.split(',').map(Number);
+                 if (world[key]) {
+                    generateChunkMesh(chunkX, chunkZ);
+                 }
+            });
+        }
+        function getBlockLocalOrNeighbor(chunkX, chunkZ, localX, localY, localZ){
+             if(localY < 0 || localY >= CHUNK_HEIGHT) return BLOCK_TYPES.AIR;
+
+             let targetChunkX = chunkX;
+             let targetChunkZ = chunkZ;
+             let targetLocalX = localX;
+             let targetLocalZ = localZ;
+
+             if(localX < 0)        { targetChunkX--; targetLocalX = CHUNK_SIZE - 1; }
+             else if(localX >= CHUNK_SIZE) { targetChunkX++; targetLocalX = 0; }
+             if(localZ < 0)        { targetChunkZ--; targetLocalZ = CHUNK_SIZE - 1; }
+             else if(localZ >= CHUNK_SIZE) { targetChunkZ++; targetLocalZ = 0; }
+
+             const key = getChunkKey(targetChunkX, targetChunkZ);
+             const chunk = world[key];
+
+             if(!chunk || !chunk.blocks) {
+                 return localY < BASE_CITY_Y ? BLOCK_TYPES.BUILDING_WALL_GRAY : BLOCK_TYPES.AIR;
+             }
+
+             const index = getBlockIndex(targetLocalX, localY, targetLocalZ);
+             return index === -1 ? BLOCK_TYPES.AIR : chunk.blocks[index];
+        }
+        function generateBuilding(baseX, baseY, baseZ, width, depth, height, wallType = BLOCK_TYPES.BUILDING_WALL_GRAY){
+            for(let dx = -1; dx <= width; dx++){
+                for(let dz = -1; dz <= depth; dz++){
+                    for(let dy = 0; dy <= height + 2; dy++){
+                        if (dy > 0 || getBlock(baseX + dx, baseY - 1, baseZ + dz) !== BLOCK_TYPES.AIR) {
+                           setBlock(baseX + dx, baseY + dy, baseZ + dz, BLOCK_TYPES.AIR);
+                        }
+                    }
+                    if(getBlock(baseX + dx, baseY - 1, baseZ + dz) === BLOCK_TYPES.AIR) {
+                        setBlock(baseX + dx, baseY - 1, baseZ + dz, BLOCK_TYPES.SIDEWALK);
+                    }
+                }
+            }
+
+            for(let dy = 0; dy < height; dy++){
+                for(let dx = 0; dx < width; dx++){
+                    setBlock(baseX + dx, baseY + dy, baseZ, wallType);
+                    setBlock(baseX + dx, baseY + dy, baseZ + depth - 1, wallType);
+                }
+                for(let dz = 1; dz < depth - 1; dz++){
+                    setBlock(baseX, baseY + dy, baseZ + dz, wallType);
+                    setBlock(baseX + width - 1, baseY + dy, baseZ + dz, wallType);
+                }
+            }
+
+            for(let dy = 1; dy < height - 1; dy += 2){
+                for(let dx = 1; dx < width - 1; dx += 3){
+                    setBlock(baseX + dx, baseY + dy, baseZ, BLOCK_TYPES.WINDOW);
+                    if(depth > 1) setBlock(baseX + dx, baseY + dy, baseZ + depth - 1, BLOCK_TYPES.WINDOW);
+                }
+                for(let dz = 1; dz < depth - 1; dz += 3){
+                    if(width > 1) setBlock(baseX, baseY + dy, baseZ + dz, BLOCK_TYPES.WINDOW);
+                    if(width > 1) setBlock(baseX + width - 1, baseY + dy, baseZ + dz, BLOCK_TYPES.WINDOW);
+                }
+            }
+
+            const roofY = baseY + height;
+            for(let dx = 0; dx < width; dx++){
+                for(let dz = 0; dz < depth; dz++){
+                    setBlock(baseX + dx, roofY, baseZ + dz, BLOCK_TYPES.SIDEWALK);
+                }
+            }
+        }
+        function generateLampPost(baseX, baseY, baseZ){
+            const height = 4 + Math.floor(Math.random() * 2);
+            for(let dy = 0; dy <= height; dy++) {
+                 setBlock(baseX, baseY + dy, baseZ, BLOCK_TYPES.AIR);
+            }
+            for(let dy = 0; dy < height; dy++){
+                setBlock(baseX, baseY + dy, baseZ, BLOCK_TYPES.LAMP_POST);
+            }
+            setBlock(baseX, baseY + height, baseZ, BLOCK_TYPES.WINDOW);
+        }
+        function generateCar(baseX, baseY, baseZ, isPoliceCar = false) {
+            const bodyColor = isPoliceCar ? BLOCK_TYPES.POLICE_CAR_BODY : (Math.random() < 0.5 ? BLOCK_TYPES.CAR_BODY_WHITE : BLOCK_TYPES.CAR_BODY_BLUE);
+            const carWidth = 2, carDepth = 5, carBodyHeight = 1, roofHeight = 1;
+
+            for(let dx = -1; dx <= carWidth; dx++){
+                for(let dz = -1; dz <= carDepth; dz++){
+                    for(let dy = 0; dy <= carBodyHeight + roofHeight + (isPoliceCar ? 1 : 0) + 1; dy++){
+                        setBlock(baseX + dx, baseY + dy -1, baseZ + dz, BLOCK_TYPES.AIR);
+                        setBlock(baseX + dx, baseY + dy, baseZ + dz, BLOCK_TYPES.AIR);
+                    }
+                }
+            }
+
+            for(let dx = 0; dx < carWidth; dx++){
+                for(let dz = 0; dz < carDepth; dz++){
+                    setBlock(baseX + dx, baseY, baseZ + dz, bodyColor);
+                }
+            }
+
+            for(let dx = 0; dx < carWidth; dx++){
+                setBlock(baseX + dx, baseY + carBodyHeight, baseZ + 1, BLOCK_TYPES.WINDOW);
+                setBlock(baseX + dx, baseY + carBodyHeight, baseZ + 2, (dx==0 || dx==carWidth-1) ? bodyColor : BLOCK_TYPES.WINDOW);
+                setBlock(baseX + dx, baseY + carBodyHeight, baseZ + 3, (dx==0 || dx==carWidth-1) ? bodyColor : BLOCK_TYPES.WINDOW);
+                setBlock(baseX + dx, baseY + carBodyHeight, baseZ + 4, bodyColor);
+            }
+
+             for(let dx = 0; dx < carWidth; dx++){
+                for(let dz = 1; dz <= 3; dz++){
+                    setBlock(baseX + dx, baseY + carBodyHeight + roofHeight, baseZ + dz, bodyColor);
+                }
+            }
+
+            setBlock(baseX - 1, baseY, baseZ + 1, BLOCK_TYPES.CAR_WHEEL);
+            setBlock(baseX + carWidth, baseY, baseZ + 1, BLOCK_TYPES.CAR_WHEEL);
+            setBlock(baseX - 1, baseY, baseZ + carDepth - 1, BLOCK_TYPES.CAR_WHEEL);
+            setBlock(baseX + carWidth, baseY, baseZ + carDepth - 1, BLOCK_TYPES.CAR_WHEEL);
+
+            if(isPoliceCar){
+                const lightY = baseY + carBodyHeight + roofHeight + 1;
+                setBlock(baseX, lightY, baseZ + 2, BLOCK_TYPES.POLICE_CAR_LIGHT_BLUE);
+                setBlock(baseX + carWidth - 1, lightY, baseZ + 2, BLOCK_TYPES.POLICE_CAR_LIGHT_RED);
+            }
+        }
+
+        function generateTree(baseX, baseY, baseZ) {
+            const trunkHeight = 4 + Math.floor(Math.random() * 3);
+            const leafRadius = 2;
+            const leafHeight = 3;
+
+            for (let dy = 0; dy <= trunkHeight + leafHeight + 1; dy++) {
+                for (let dx = -leafRadius; dx <= leafRadius; dx++) {
+                    for (let dz = -leafRadius; dz <= leafRadius; dz++) {
+                         if(Math.abs(dx) <= 1 && Math.abs(dz) <= 1 && dy < trunkHeight) continue;
+                         const currentBlock = getBlock(baseX + dx, baseY + dy, baseZ + dz);
+                         if (currentBlock === BLOCK_TYPES.AIR || currentBlock === BLOCK_TYPES.TREE_LEAVES) {
+                            setBlock(baseX + dx, baseY + dy, baseZ + dz, BLOCK_TYPES.AIR);
+                         }
+                    }
+                }
+            }
+
+            for (let i = 0; i < trunkHeight; i++) {
+                setBlock(baseX, baseY + i, baseZ, BLOCK_TYPES.TREE_TRUNK);
+            }
+
+            const leafStartY = baseY + trunkHeight - leafRadius + 1;
+            const leafEndY = baseY + trunkHeight + Math.floor(leafHeight/2);
+
+            for (let ly = leafStartY; ly <= leafEndY; ly++) {
+                let currentRadius = leafRadius;
+                if (ly === leafStartY || ly === leafEndY) {
+                    currentRadius = leafRadius -1;
+                }
+                 if (ly === leafEndY && leafHeight > 2) currentRadius = 1;
+
+                for (let lx = -currentRadius; lx <= currentRadius; lx++) {
+                    for (let lz = -currentRadius; lz <= currentRadius; lz++) {
+                        if (lx === 0 && lz === 0 && ly < baseY + trunkHeight) continue;
+                        if (ly === leafStartY && Math.abs(lx) === currentRadius && Math.abs(lz) === currentRadius) continue;
+                        if (ly === leafEndY && Math.abs(lx) + Math.abs(lz) > currentRadius) continue;
+
+                        const worldLeafX = baseX + lx;
+                        const worldLeafY = ly;
+                        const worldLeafZ = baseZ + lz;
+
+                        const blockAtLeafPos = getBlock(worldLeafX, worldLeafY, worldLeafZ);
+                        if (blockAtLeafPos === BLOCK_TYPES.AIR || blockAtLeafPos === BLOCK_TYPES.TREE_LEAVES) {
+                           setBlock(worldLeafX, worldLeafY, worldLeafZ, BLOCK_TYPES.TREE_LEAVES);
+                        }
+                    }
+                }
+            }
+        }
+
+        function generatePoliceBarrier(baseX, baseY, baseZ, length = 3, axis = 'x') {
+            for (let i = 0; i < length; i++) {
+                let placeX = baseX, placeZ = baseZ;
+                if (axis === 'x') {
+                    placeX += i;
+                } else {
+                    placeZ += i;
+                }
+                if (getBlock(placeX, baseY, placeZ) === BLOCK_TYPES.AIR && getBlock(placeX, baseY-1, placeZ) !== BLOCK_TYPES.AIR) {
+                    setBlock(placeX, baseY, placeZ, BLOCK_TYPES.POLICE_BARRIER);
+                }
+            }
+        }
+
+        function generateChunkData(chunkX, chunkZ){
+            const key = getChunkKey(chunkX, chunkZ);
+            if(world[key]) return;
+
+            const chunk = {
+                blocks: new Uint8Array(CHUNK_SIZE * CHUNK_HEIGHT * CHUNK_SIZE),
+                mesh: null,
+                structuresGenerated: false
+            };
+            world[key] = chunk;
+
+            for(let x = 0; x < CHUNK_SIZE; x++){
+                for(let z = 0; z < CHUNK_SIZE; z++){
+                    const worldX = chunkX * CHUNK_SIZE + x;
+                    const worldZ = chunkZ * CHUNK_SIZE + z;
+
+                    const groundNoise = (PerlinNoise.noise(worldX * NOISE_SCALE_GROUND, worldZ * NOISE_SCALE_GROUND, 10) + 1) / 2;
+                    const surfaceHeight = BASE_CITY_Y + Math.floor(groundNoise * WORLD_HEIGHT_VARIATION);
+
+                    const roadNoise = (PerlinNoise.noise(worldX * 0.03, worldZ * 0.03, 100) + 1) / 2;
+                    const forestNoise = (PerlinNoise.noise(worldX * NOISE_SCALE_FOREST, worldZ * NOISE_SCALE_FOREST, 200) + 1) / 2;
+
+                    let baseBlockType = BLOCK_TYPES.SIDEWALK;
+                    let isRoadArea = false;
+                    let isParkArea = false;
+
+                    const roadWidth = 4;
+                    const sidewalkWidth = 2;
+                    const roadInterval = 24;
+                    if (Math.abs(worldX % roadInterval) < roadWidth || Math.abs(worldZ % roadInterval) < roadWidth) {
+                         isRoadArea = true;
+                         if (Math.abs(worldX % roadInterval) >= roadWidth - sidewalkWidth && Math.abs(worldZ % roadInterval) >= roadWidth - sidewalkWidth) {
+                             baseBlockType = BLOCK_TYPES.ASPHALT;
+                         } else {
+                             baseBlockType = BLOCK_TYPES.SIDEWALK;
+                         }
+                    } else {
+                         if (forestNoise > 0.55) {
+                            isParkArea = true;
+                            baseBlockType = BLOCK_TYPES.PARK_GRASS;
+                         } else if (forestNoise > 0.45) {
+                            baseBlockType = BLOCK_TYPES.PARK_GRASS;
+                         } else {
+                            baseBlockType = BLOCK_TYPES.SIDEWALK;
+                         }
+                    }
+
+                    for(let y = 0; y < CHUNK_HEIGHT; y++){
+                        const blockIndex = getBlockIndex(x, y, z);
+                        if (blockIndex === -1) continue;
+
+                        let blockType = BLOCK_TYPES.AIR;
+                        if(y < surfaceHeight) {
+                            blockType = baseBlockType === BLOCK_TYPES.ASPHALT ? BLOCK_TYPES.ASPHALT : (baseBlockType === BLOCK_TYPES.PARK_GRASS ? BLOCK_TYPES.BUILDING_WALL_BRICK : BLOCK_TYPES.BUILDING_WALL_GRAY);
+                        } else if (y === surfaceHeight) {
+                             blockType = baseBlockType;
+                        }
+                        chunk.blocks[blockIndex] = blockType;
+                    }
+
+                    const surfaceBlockIndex = getBlockIndex(x, surfaceHeight, z);
+                    if(surfaceBlockIndex !== -1) {
+                        const surfaceBlock = chunk.blocks[surfaceBlockIndex];
+                        if(surfaceBlock === BLOCK_TYPES.SIDEWALK || surfaceBlock === BLOCK_TYPES.PARK_GRASS){
+                             if(policeEntities.length < MAX_POLICE && Math.random() < POLICE_SPAWN_CHANCE * (isParkArea ? 0.3 : 1.0)){
+                                 spawnPolice(new THREE.Vector3(worldX + 0.5, surfaceHeight + PLAYER_HEIGHT/2 + 0.1, worldZ + 0.5));
+                             }
+                        }
+                    }
+                }
+            }
+
+             if(!chunk.structuresGenerated){
+                 for(let x = 0; x < CHUNK_SIZE; x++){
+                     for(let z = 0; z < CHUNK_SIZE; z++){
+                         const worldX = chunkX * CHUNK_SIZE + x;
+                         const worldZ = chunkZ * CHUNK_SIZE + z;
+                         const surfaceY = getSurfaceHeight(worldX, worldZ);
+
+                         if(surfaceY < 0 || surfaceY >= CHUNK_HEIGHT) continue;
+
+                         const blockIndex = getBlockIndex(x, surfaceY, z);
+                         if(blockIndex === -1 || blockIndex >= chunk.blocks.length) continue;
+                         const blockOnSurface = chunk.blocks[blockIndex];
+
+                         const forestNoise = (PerlinNoise.noise(worldX * NOISE_SCALE_FOREST, worldZ * NOISE_SCALE_FOREST, 200) + 1) / 2;
+                         const isParkArea = forestNoise > 0.55;
+                         const isRoad = Math.abs(worldX % 24) < 4 || Math.abs(worldZ % 24) < 4;
+
+                         if (blockOnSurface === BLOCK_TYPES.PARK_GRASS && surfaceY >= BASE_CITY_Y) {
+                             const treeChance = isParkArea ? 0.1 : 0.03;
+                             if (Math.random() < treeChance && getBlock(worldX, surfaceY+1, worldZ) === BLOCK_TYPES.AIR) {
+                                  let spaceClear = true;
+                                  for(let dx = -1; dx <= 1; dx++) {
+                                      for(let dz = -1; dz <= 1; dz++) {
+                                          if (getBlock(worldX+dx, surfaceY, worldZ+dz) !== BLOCK_TYPES.PARK_GRASS) {
+                                              spaceClear = false; break;
+                                          }
+                                      }
+                                      if (!spaceClear) break;
+                                  }
+                                  if (spaceClear) {
+                                    generateTree(worldX, surfaceY + 1, worldZ);
+                                  }
+                             }
+                         }
+                         else if(blockOnSurface === BLOCK_TYPES.SIDEWALK && surfaceY >= BASE_CITY_Y && !isParkArea){
+                             const buildingNoiseValue = (PerlinNoise.noise(worldX * NOISE_SCALE_BUILDING, worldZ * NOISE_SCALE_BUILDING, 50) + 1) / 2;
+                             if(x % 8 === 1 && z % 10 === 1 && buildingNoiseValue > 0.65){
+                                 const buildingWidth = 4 + Math.floor(Math.random() * 5);
+                                 const buildingDepth = 5 + Math.floor(Math.random() * 6);
+                                 const buildingHeight = 5 + Math.floor(Math.random() * 10);
+                                 const wallType = Math.random() < 0.6 ? BLOCK_TYPES.BUILDING_WALL_GRAY : BLOCK_TYPES.BUILDING_WALL_BRICK;
+
+                                 if(x + buildingWidth < CHUNK_SIZE && z + buildingDepth < CHUNK_SIZE){
+                                     let canBuild = true;
+                                     for(let bx = x - 1; bx < x + buildingWidth + 1; bx++){
+                                         for(let bz = z - 1; bz < z + buildingDepth + 1; bz++){
+                                             const checkIndex = getBlockIndex(bx, surfaceY, bz);
+                                             const blockToCheck = (checkIndex !== -1 && checkIndex < chunk.blocks.length) ? chunk.blocks[checkIndex] : getBlock(chunkX * CHUNK_SIZE + bx, surfaceY, chunkZ * CHUNK_SIZE + bz);
+                                             if (blockToCheck === BLOCK_TYPES.ASPHALT || blockToCheck === BLOCK_TYPES.PARK_GRASS){
+                                                 canBuild = false;
+                                                 break;
+                                             }
+                                         }
+                                         if (!canBuild) break;
+                                     }
+
+                                     if (canBuild) {
+                                         generateBuilding(worldX, surfaceY + 1, worldZ, buildingWidth, buildingDepth, buildingHeight, wallType);
+                                     }
+                                 }
+                             }
+                             else if (x % 7 === 0 && z % 7 === 3 && Math.random() < 0.08) {
+                                 generateLampPost(worldX, surfaceY + 1, worldZ);
+                             }
+                             else if (Math.random() < 0.005) {
+                                 const neighborX = getBlock(worldX+1, surfaceY, worldZ);
+                                 const neighborNX = getBlock(worldX-1, surfaceY, worldZ);
+                                 const neighborZ = getBlock(worldX, surfaceY, worldZ+1);
+                                 const neighborNZ = getBlock(worldX, surfaceY, worldZ-1);
+
+                                 if (neighborX === BLOCK_TYPES.ASPHALT || neighborNX === BLOCK_TYPES.ASPHALT) {
+                                     generatePoliceBarrier(worldX, surfaceY + 1, worldZ, 3 + Math.floor(Math.random() * 3), 'z');
+                                 } else if (neighborZ === BLOCK_TYPES.ASPHALT || neighborNZ === BLOCK_TYPES.ASPHALT) {
+                                      generatePoliceBarrier(worldX, surfaceY + 1, worldZ, 3 + Math.floor(Math.random() * 3), 'x');
+                                 }
+                             }
+                         }
+                         else if (blockOnSurface === BLOCK_TYPES.ASPHALT && surfaceY >= BASE_CITY_Y){
+                             const neighborBlockZ = getBlock(worldX, surfaceY, worldZ + 1);
+                             const neighborBlockX = getBlock(worldX+1, surfaceY, worldZ);
+                             const isPolice = Math.random() < 0.15;
+                             if ((neighborBlockZ === BLOCK_TYPES.SIDEWALK || neighborBlockX === BLOCK_TYPES.SIDEWALK) && Math.random() < (isPolice ? 0.10 : 0.05)){
+                                  const carWidth = 2; const carDepth = 5;
+                                  if(x + carWidth < CHUNK_SIZE && z + carDepth < CHUNK_SIZE){
+                                      let placeOk = true;
+                                      for(let dx=0; dx<carWidth; dx++){
+                                        for(let dz=0; dz<carDepth; dz++){
+                                            if(getBlock(worldX+dx, surfaceY, worldZ+dz) !== BLOCK_TYPES.ASPHALT){
+                                                placeOk = false; break;
+                                            }
+                                        }
+                                        if(!placeOk) break;
+                                      }
+
+                                      if(placeOk){
+                                         generateCar(worldX, surfaceY + 1, worldZ, isPolice);
+                                      }
+                                  }
+                             }
+                         }
+                     }
+                 }
+                 chunk.structuresGenerated = true;
+             }
+
+            chunksToGenerate.push({ chunkX: chunkX, chunkZ: chunkZ });
+        }
+        function getSurfaceHeight(worldX, worldZ) {
+            const { chunkX, chunkZ, localX, localZ } = worldToChunkCoords(worldX, CHUNK_HEIGHT - 1, worldZ);
+            const chunk = world[getChunkKey(chunkX, chunkZ)];
+
+            if(!chunk || !chunk.blocks){
+                const groundNoise = (PerlinNoise.noise(worldX * NOISE_SCALE_GROUND, worldZ * NOISE_SCALE_GROUND, 10) + 1) / 2;
+                return BASE_CITY_Y + Math.floor(groundNoise * WORLD_HEIGHT_VARIATION);
+            }
+
+            for(let y = CHUNK_HEIGHT - 1; y >= 0; y--){
+                const blockIndex = getBlockIndex(localX, y, localZ);
+                if(blockIndex !== -1 && chunk.blocks[blockIndex] !== BLOCK_TYPES.AIR){
+                    return y;
+                }
+            }
+            return BASE_CITY_Y;
+        }
+        function generateChunkMesh(chunkX, chunkZ){
+            const key = getChunkKey(chunkX, chunkZ);
+            const chunk = world[key];
+
+            if(!chunk || !chunk.blocks){
+                return;
+            }
+
+            if(chunk.mesh){
+                scene.remove(chunk.mesh);
+                chunk.mesh.geometry.dispose();
+                chunk.mesh = null;
+            }
+
+            const positions = []; const normals = []; const colors = []; const indices = [];
+            let vertexIndex = 0;
+
+            const TOP_BRIGHTNESS = 1.0, SIDE_BRIGHTNESS = 0.8, BOTTOM_BRIGHTNESS = 0.6;
+
+            for(let y = 0; y < CHUNK_HEIGHT; y++){
+                for(let z = 0; z < CHUNK_SIZE; z++){
+                    for(let x = 0; x < CHUNK_SIZE; x++){
+                        const blockIndex = getBlockIndex(x, y, z);
+                        if (blockIndex === -1) continue;
+                        const blockType = chunk.blocks[blockIndex];
+
+                        if(blockType === BLOCK_TYPES.AIR) continue;
+
+                        const blockColorData = BLOCK_COLORS[blockType] || { top: 0x777777, side: 0x777777, bottom: 0x777777 };
+
+                        const worldX = chunkX * CHUNK_SIZE + x;
+                        const worldY = y;
+                        const worldZ = chunkZ * CHUNK_SIZE + z;
+
+                        const isTransparent = (type) => type === BLOCK_TYPES.AIR || type === BLOCK_TYPES.WINDOW || type === BLOCK_TYPES.TREE_LEAVES;
+
+                        const neighbors = {
+                            nx: isTransparent(getBlockLocalOrNeighbor(chunkX, chunkZ, x - 1, y, z)),
+                            px: isTransparent(getBlockLocalOrNeighbor(chunkX, chunkZ, x + 1, y, z)),
+                            ny: isTransparent(getBlockLocalOrNeighbor(chunkX, chunkZ, x, y - 1, z)),
+                            py: isTransparent(getBlockLocalOrNeighbor(chunkX, chunkZ, x, y + 1, z)),
+                            nz: isTransparent(getBlockLocalOrNeighbor(chunkX, chunkZ, x, y, z - 1)),
+                            pz: isTransparent(getBlockLocalOrNeighbor(chunkX, chunkZ, x, y, z + 1))
+                        };
+
+
+                        if(neighbors.pz){
+                            const faceColor = new THREE.Color(blockColorData.side); const C = SIDE_BRIGHTNESS;
+                            positions.push(worldX, worldY, worldZ + 1,  worldX + 1, worldY, worldZ + 1,  worldX + 1, worldY + 1, worldZ + 1,  worldX, worldY + 1, worldZ + 1);
+                            normals.push(0, 0, 1,  0, 0, 1,  0, 0, 1,  0, 0, 1);
+                            colors.push(faceColor.r * C, faceColor.g * C, faceColor.b * C,  faceColor.r * C, faceColor.g * C, faceColor.b * C,  faceColor.r * C, faceColor.g * C, faceColor.b * C,  faceColor.r * C, faceColor.g * C, faceColor.b * C);
+                            indices.push(vertexIndex, vertexIndex + 1, vertexIndex + 2,  vertexIndex, vertexIndex + 2, vertexIndex + 3);
+                            vertexIndex += 4;
+                        }
+                        if(neighbors.nz){
+                            const faceColor = new THREE.Color(blockColorData.side); const C = SIDE_BRIGHTNESS;
+                            positions.push(worldX + 1, worldY, worldZ,  worldX, worldY, worldZ,  worldX, worldY + 1, worldZ,  worldX + 1, worldY + 1, worldZ);
+                            normals.push(0, 0, -1,  0, 0, -1,  0, 0, -1,  0, 0, -1);
+                            colors.push(faceColor.r * C, faceColor.g * C, faceColor.b * C,  faceColor.r * C, faceColor.g * C, faceColor.b * C,  faceColor.r * C, faceColor.g * C, faceColor.b * C,  faceColor.r * C, faceColor.g * C, faceColor.b * C);
+                            indices.push(vertexIndex, vertexIndex + 1, vertexIndex + 2,  vertexIndex, vertexIndex + 2, vertexIndex + 3);
+                            vertexIndex += 4;
+                        }
+                        if(neighbors.px){
+                             const faceColor = new THREE.Color(blockColorData.side); const C = SIDE_BRIGHTNESS;
+                            positions.push(worldX + 1, worldY, worldZ + 1,  worldX + 1, worldY, worldZ,  worldX + 1, worldY + 1, worldZ,  worldX + 1, worldY + 1, worldZ + 1);
+                            normals.push(1, 0, 0,  1, 0, 0,  1, 0, 0,  1, 0, 0);
+                            colors.push(faceColor.r * C, faceColor.g * C, faceColor.b * C,  faceColor.r * C, faceColor.g * C, faceColor.b * C,  faceColor.r * C, faceColor.g * C, faceColor.b * C,  faceColor.r * C, faceColor.g * C, faceColor.b * C);
+                            indices.push(vertexIndex, vertexIndex + 1, vertexIndex + 2,  vertexIndex, vertexIndex + 2, vertexIndex + 3);
+                            vertexIndex += 4;
+                        }
+                        if(neighbors.nx){
+                             const faceColor = new THREE.Color(blockColorData.side); const C = SIDE_BRIGHTNESS;
+                            positions.push(worldX, worldY, worldZ,  worldX, worldY, worldZ + 1,  worldX, worldY + 1, worldZ + 1,  worldX, worldY + 1, worldZ);
+                            normals.push(-1, 0, 0,  -1, 0, 0,  -1, 0, 0,  -1, 0, 0);
+                            colors.push(faceColor.r * C, faceColor.g * C, faceColor.b * C,  faceColor.r * C, faceColor.g * C, faceColor.b * C,  faceColor.r * C, faceColor.g * C, faceColor.b * C,  faceColor.r * C, faceColor.g * C, faceColor.b * C);
+                            indices.push(vertexIndex, vertexIndex + 1, vertexIndex + 2,  vertexIndex, vertexIndex + 2, vertexIndex + 3);
+                            vertexIndex += 4;
+                        }
+                        if(neighbors.py){
+                            const faceColor = new THREE.Color(blockColorData.top); const C = TOP_BRIGHTNESS;
+                            positions.push(worldX, worldY + 1, worldZ + 1,  worldX + 1, worldY + 1, worldZ + 1,  worldX + 1, worldY + 1, worldZ,  worldX, worldY + 1, worldZ);
+                            normals.push(0, 1, 0,  0, 1, 0,  0, 1, 0,  0, 1, 0);
+                            colors.push(faceColor.r * C, faceColor.g * C, faceColor.b * C,  faceColor.r * C, faceColor.g * C, faceColor.b * C,  faceColor.r * C, faceColor.g * C, faceColor.b * C,  faceColor.r * C, faceColor.g * C, faceColor.b * C);
+                            indices.push(vertexIndex, vertexIndex + 1, vertexIndex + 2,  vertexIndex, vertexIndex + 2, vertexIndex + 3);
+                            vertexIndex += 4;
+                        }
+                        if(neighbors.ny){
+                            const faceColor = new THREE.Color(blockColorData.bottom); const C = BOTTOM_BRIGHTNESS;
+                            positions.push(worldX, worldY, worldZ,  worldX + 1, worldY, worldZ,  worldX + 1, worldY, worldZ + 1,  worldX, worldY, worldZ + 1);
+                            normals.push(0, -1, 0,  0, -1, 0,  0, -1, 0,  0, -1, 0);
+                            colors.push(faceColor.r * C, faceColor.g * C, faceColor.b * C,  faceColor.r * C, faceColor.g * C, faceColor.b * C,  faceColor.r * C, faceColor.g * C, faceColor.b * C,  faceColor.r * C, faceColor.g * C, faceColor.b * C);
+                            indices.push(vertexIndex, vertexIndex + 1, vertexIndex + 2,  vertexIndex, vertexIndex + 2, vertexIndex + 3);
+                            vertexIndex += 4;
+                        }
+                    }
+                }
+            }
+
+            if(positions.length === 0){
+                return;
+            }
+
+            const geometry = new THREE.BufferGeometry();
+            geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+            geometry.setAttribute('normal', new THREE.Float32BufferAttribute(normals, 3));
+            geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+            geometry.setIndex(indices);
+
+            chunk.mesh = new THREE.Mesh(geometry, material);
+            chunk.mesh.castShadow = true;
+            chunk.mesh.receiveShadow = true;
+            chunk.mesh.userData = { chunkX: chunkX, chunkZ: chunkZ };
+            scene.add(chunk.mesh);
+        }
+        function updateWorldChunks(){
+            let currentChunkX, currentChunkZ;
+            let effectiveRenderDistance;
+            let maxMeshesPerFrame;
+
+            if(gameState === 'PLAYING'){
+                currentChunkX = Math.floor(camera.position.x / CHUNK_SIZE);
+                currentChunkZ = Math.floor(camera.position.z / CHUNK_SIZE);
+                effectiveRenderDistance = RENDER_DISTANCE;
+                maxMeshesPerFrame = 2;
+            } else if (menuCameraAnimation.active && gameState === 'MENU'){
+                currentChunkX = Math.floor(menuCameraAnimation.initialPosition.x / CHUNK_SIZE);
+                currentChunkZ = Math.floor(menuCameraAnimation.initialPosition.z / CHUNK_SIZE);
+                effectiveRenderDistance = 2;
+                maxMeshesPerFrame = 4;
+            } else {
+                processChunkMeshUpdates();
+                return;
+            }
+
+            for(let x = currentChunkX - effectiveRenderDistance; x <= currentChunkX + effectiveRenderDistance; x++){
+                for(let z = currentChunkZ - effectiveRenderDistance; z <= currentChunkZ + effectiveRenderDistance; z++){
+                    const key = getChunkKey(x, z);
+                    if(!world[key]){
+                        generateChunkData(x, z);
+                    }
+                    else if (world[key].mesh === null && !chunksToGenerate.some(c => c.chunkX === x && c.chunkZ === z) && !scheduledMeshUpdates.has(key)) {
+                         if(Math.abs(x - currentChunkX) <= effectiveRenderDistance && Math.abs(z - currentChunkZ) <= effectiveRenderDistance) {
+                             chunksToGenerate.push({ chunkX: x, chunkZ: z });
+                         }
+                    }
+                }
+            }
+
+            let meshesGeneratedThisFrame = 0;
+            while (meshesGeneratedThisFrame < maxMeshesPerFrame && chunksToGenerate.length > 0) {
+                const { chunkX, chunkZ } = chunksToGenerate.shift();
+                if(Math.abs(chunkX - currentChunkX) <= effectiveRenderDistance && Math.abs(chunkZ - currentChunkZ) <= effectiveRenderDistance) {
+                    if(world[getChunkKey(chunkX, chunkZ)]) {
+                        generateChunkMesh(chunkX, chunkZ);
+                        meshesGeneratedThisFrame++;
+                    }
+                } else {
+                }
+            }
+
+             processChunkMeshUpdates();
+
+
+            if(gameState === 'PLAYING'){
+                const unloadDistance = RENDER_DISTANCE + 1;
+                const chunksToRemoveKeys = [];
+                for (const key in world) {
+                    const chunk = world[key];
+                    if (chunk.mesh || chunk.blocks) {
+                         const [cx, cz] = key.split(',').map(Number);
+                         if(Math.abs(cx - currentChunkX) > unloadDistance || Math.abs(cz - currentChunkZ) > unloadDistance){
+                             chunksToRemoveKeys.push(key);
+                         }
+                    }
+                }
+                chunksToRemoveKeys.forEach(key => {
+                     const chunkToRemove = world[key];
+                     if (chunkToRemove) {
+                         if (chunkToRemove.mesh) {
+                             scene.remove(chunkToRemove.mesh);
+                             chunkToRemove.mesh.geometry.dispose();
+                             chunkToRemove.mesh = null;
+                         }
+                     }
+                });
+
+                const entityUnloadDistanceChunks = RENDER_DISTANCE + 2;
+                const playerChunkX = Math.floor(camera.position.x / CHUNK_SIZE);
+                const playerChunkZ = Math.floor(camera.position.z / CHUNK_SIZE);
+
+                for(let i = policeEntities.length - 1; i >= 0; i--){
+                     const entity = policeEntities[i];
+                     if (!entity || !entity.position) continue;
+                     const entityChunkX = Math.floor(entity.position.x / CHUNK_SIZE);
+                     const entityChunkZ = Math.floor(entity.position.z / CHUNK_SIZE);
+                     if(Math.abs(entityChunkX - playerChunkX) > entityUnloadDistanceChunks || Math.abs(entityChunkZ - playerChunkZ) > entityUnloadDistanceChunks){
+                         if(entity.mesh) scene.remove(entity.mesh);
+                         policeEntities.splice(i, 1);
+                     }
+                 }
+            }
+        }
+
+        function updatePlayer(deltaTime) {
+             if (gameState !== 'PLAYING' || playerHealth <= 0) return;
+
+             let currentMoveSpeed = MOVE_SPEED;
+             let isMoving = false;
+
+             if (isMobile) {
+                 isMoving = joystickMagnitude > 0.1;
+             } else {
+                 isMoving = keys['KeyW'] || keys['KeyS'] || keys['KeyA'] || keys['KeyD'];
+             }
+
+             if(isSprinting && playerOnGround && isMoving && playerStamina > 0){
+                 currentMoveSpeed = MOVE_SPEED * sprintMultiplier;
+                 playerStamina -= STAMINA_DRAIN_RATE * deltaTime;
+                 if(playerStamina <= 0){
+                     playerStamina = 0;
+                     isSprinting = false;
+                     targetFov = originalFov;
+                     showNotification("Dayanıklılık tükendi!");
+                 }
+             } else if (playerStamina < MAX_STAMINA && !isSprinting) {
+                 playerStamina += STAMINA_REGEN_RATE * deltaTime;
+                 playerStamina = Math.min(playerStamina, MAX_STAMINA);
+             }
+
+             if(isSprinting && isMoving && playerStamina <= 0 && playerOnGround){
+                 playerHealth -= STAMINA_HEALTH_DRAIN_RATE * deltaTime;
+                 lastDamageTime = clock.elapsedTime;
+                 if(playerHealth <= 0){
+                     handlePlayerDeath();
+                     return;
+                 }
+             }
+
+             if(playerHealth < MAX_HEALTH && clock.elapsedTime > lastDamageTime + HEALTH_REGEN_DELAY && !isInGasCloud(camera.position)){
+                 playerHealth += HEALTH_REGEN_RATE * deltaTime;
+                 playerHealth = Math.min(playerHealth, MAX_HEALTH);
+             }
+
+             const forwardDirection = new THREE.Vector3();
+             camera.getWorldDirection(forwardDirection);
+             forwardDirection.y = 0;
+             forwardDirection.normalize();
+
+             const rightDirection = new THREE.Vector3();
+             rightDirection.crossVectors(forwardDirection, camera.up).normalize();
+
+             let moveForward = 0;
+             let moveRight = 0;
+
+             if(joystickActive){
+                 moveForward = -joystickDeltaY * joystickMagnitude;
+                 moveRight = joystickDeltaX * joystickMagnitude;
+             } else if (!isMobile) {
+                 if(keys['KeyW']) moveForward += 1;
+                 if(keys['KeyS']) moveForward -= 1;
+                 if(keys['KeyA']) moveRight -= 1;
+                 if(keys['KeyD']) moveRight += 1;
+             }
+
+             const moveDirection = new THREE.Vector3();
+             moveDirection.addScaledVector(forwardDirection, moveForward);
+             moveDirection.addScaledVector(rightDirection, moveRight);
+
+             if (!joystickActive && moveDirection.lengthSq() > 1.1) {
+                 moveDirection.normalize();
+             }
+
+             playerVelocity.y += GRAVITY * deltaTime;
+
+             if(!isMobile && keys['Space'] && playerOnGround){
+                 playerVelocity.y = JUMP_VELOCITY;
+                 playerOnGround = false;
+             }
+
+             const deltaPosition = moveDirection.multiplyScalar(currentMoveSpeed * deltaTime);
+             const physicsDelta = playerVelocity.clone().multiplyScalar(deltaTime);
+
+             const playerBoundingBoxSize = new THREE.Vector3(PLAYER_RADIUS * 2, PLAYER_HEIGHT, PLAYER_RADIUS * 2);
+             const playerHeightOffset = PLAYER_HEIGHT / 2;
+
+             playerOnGround = false;
+
+             let targetPosX = camera.position.clone().add(new THREE.Vector3(deltaPosition.x + physicsDelta.x, 0, 0));
+             if (!checkCollision(targetPosX, playerBoundingBoxSize, playerHeightOffset)) {
+                 camera.position.x = targetPosX.x;
+             } else {
+                 playerVelocity.x = 0;
+             }
+
+             let targetPosZ = camera.position.clone().add(new THREE.Vector3(0, 0, deltaPosition.z + physicsDelta.z));
+             if (!checkCollision(targetPosZ, playerBoundingBoxSize, playerHeightOffset)) {
+                 camera.position.z = targetPosZ.z;
+             } else {
+                 playerVelocity.z = 0;
+             }
+
+             let targetPosY = camera.position.clone().add(new THREE.Vector3(0, physicsDelta.y, 0));
+             if (!checkCollision(targetPosY, playerBoundingBoxSize, playerHeightOffset)) {
+                 camera.position.y = targetPosY.y;
+             } else {
+                 if (physicsDelta.y < 0) {
+                     playerOnGround = true;
+                     const collisionFloorY = Math.floor(camera.position.y - playerHeightOffset + physicsDelta.y);
+                     camera.position.y = collisionFloorY + 1 + playerHeightOffset + COLLISION_EPSILON;
+                     playerVelocity.y = 0;
+                 } else if (physicsDelta.y > 0) {
+                     const collisionCeilY = Math.ceil(camera.position.y + (PLAYER_HEIGHT - playerHeightOffset) + physicsDelta.y);
+                     camera.position.y = collisionCeilY - (PLAYER_HEIGHT - playerHeightOffset) - COLLISION_EPSILON;
+                     playerVelocity.y = 0;
+                 }
+             }
+
+             if(camera.position.y < playerHeightOffset){
+                  camera.position.y = playerHeightOffset + COLLISION_EPSILON;
+                  playerVelocity.y = 0;
+                  playerOnGround = true;
+             }
+
+             if (!isMoving && playerOnGround) {
+                 playerVelocity.x *= 0.85;
+                 playerVelocity.z *= 0.85;
+             }
+             else if (!playerOnGround) {
+                 playerVelocity.x *= 0.98;
+                 playerVelocity.z *= 0.98;
+             }
+
+             const fovLerpFactor = 0.1;
+             camera.fov = THREE.MathUtils.lerp(camera.fov, targetFov, fovLerpFactor);
+             camera.updateProjectionMatrix();
+
+             updateWindLines(deltaTime);
+             updateHealthStaminaUI();
+             updateGasClouds(deltaTime);
+
+             if(controls && controls.getObject()){
+                controls.getObject().position.copy(camera.position);
+             }
+        }
+
+        function checkCollision(centerPosition, boundingBoxSize, heightOffset){
+            const halfSize = boundingBoxSize.clone().multiplyScalar(0.5);
+            const playerBox = new THREE.Box3(
+                new THREE.Vector3(centerPosition.x - halfSize.x, centerPosition.y - heightOffset, centerPosition.z - halfSize.z),
+                new THREE.Vector3(centerPosition.x + halfSize.x, centerPosition.y + (boundingBoxSize.y - heightOffset), centerPosition.z + halfSize.z)
+            );
+
+            const minX = Math.floor(playerBox.min.x - COLLISION_EPSILON);
+            const maxX = Math.ceil(playerBox.max.x + COLLISION_EPSILON);
+            const minY = Math.floor(playerBox.min.y - COLLISION_EPSILON);
+            const maxY = Math.ceil(playerBox.max.y + COLLISION_EPSILON);
+            const minZ = Math.floor(playerBox.min.z - COLLISION_EPSILON);
+            const maxZ = Math.ceil(playerBox.max.z + COLLISION_EPSILON);
+
+            for(let y = minY; y < maxY; y++){
+                for(let z = minZ; z < maxZ; z++){
+                    for(let x = minX; x < maxX; x++){
+                        const blockType = getBlock(x, y, z);
+                        const isSolid = blockType !== BLOCK_TYPES.AIR &&
+                                        blockType !== BLOCK_TYPES.WINDOW &&
+                                        blockType !== BLOCK_TYPES.TREE_LEAVES;
+
+                        if(isSolid){
+                            const blockBox = new THREE.Box3(
+                                new THREE.Vector3(x, y, z),
+                                new THREE.Vector3(x + 1, y + 1, z + 1)
+                            );
+                            if(playerBox.intersectsBox(blockBox)){
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        function updateHealthStaminaUI(){
+            if(!canCubuguIc || !dayaniklilikCubuguIc) return;
+            const healthPercent = Math.max(0, playerHealth) / MAX_HEALTH * 100;
+            const staminaPercent = Math.max(0, playerStamina) / MAX_STAMINA * 100;
+            canCubuguIc.style.width = `${healthPercent}%`;
+            dayaniklilikCubuguIc.style.width = `${staminaPercent}%`;
+        }
+        function setupSprintUI(){
+             if(kosmaKaydirici && kosmaHiziDegeriUI){
+                 kosmaKaydirici.addEventListener('input', (e)=>{
+                     sprintMultiplier = parseFloat(e.target.value);
+                     kosmaHiziDegeriUI.textContent = `${sprintMultiplier.toFixed(1)}x`;
+                 });
+                 sprintMultiplier = parseFloat(kosmaKaydirici.value);
+                 kosmaHiziDegeriUI.textContent = `${sprintMultiplier.toFixed(1)}x`;
+             }
+        }
+        function showNotification(message){
+            if(!bildirimUI) return;
+            bildirimUI.textContent = message;
+            bildirimUI.style.display = 'block';
+            bildirimUI.style.top = '20px';
+            bildirimUI.style.opacity = '1';
+
+            setTimeout(()=>{
+                if(!bildirimUI) return;
+                bildirimUI.style.opacity = '0';
+                bildirimUI.style.top = '-50px';
+                setTimeout(()=>{
+                    if(!bildirimUI) return;
+                    bildirimUI.style.display = 'none';
+                }, 300);
+            }, 1500);
+        }
+        function createWindLines(){
+            const lineCount = 30;
+            const positions = new Float32Array(lineCount * 2 * 3);
+            const colors = new Float32Array(lineCount * 2 * 3);
+
+            for(let i=0; i < lineCount; i++){
+                 positions[i * 6 + 0] = 0; positions[i * 6 + 1] = 0; positions[i * 6 + 2] = -1;
+                 positions[i * 6 + 3] = 0; positions[i * 6 + 4] = 0; positions[i * 6 + 5] = -1;
+                 const alpha = 0.5 + Math.random() * 0.2;
+                 colors[i * 6 + 0] = colors[i * 6 + 1] = colors[i * 6 + 2] = alpha;
+                 colors[i * 6 + 3] = colors[i * 6 + 4] = colors[i * 6 + 5] = alpha;
+            }
+
+            const geometry = new THREE.BufferGeometry();
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+            const material = new THREE.LineBasicMaterial({
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.4,
+                depthTest: false,
+                linewidth: 1
+            });
+
+            windLinesMesh = new THREE.LineSegments(geometry, material);
+            windLinesMesh.frustumCulled = false;
+            windLinesMesh.visible = false;
+            camera.add(windLinesMesh);
+        }
+        function updateWindLines(deltaTime){
+            if(!windLinesMesh) return;
+
+            if(!isSprinting || playerHealth <= 0 || gameState !== 'PLAYING'){
+                windLinesMesh.visible = false;
+                return;
+            }
+
+            if(!windLinesMesh.visible) windLinesMesh.visible = true;
+
+            const positions = windLinesMesh.geometry.attributes.position.array;
+            const lineCount = positions.length / 6;
+            const speedFactor = (sprintMultiplier / SPRINT_MULTIPLIER_DEFAULT);
+            const baseLineLength = 0.3 * speedFactor;
+            const screenEdgeFactor = 1.8;
+
+            for(let i = 0; i < lineCount; i++){
+                 const startIndex = i * 6;
+                 const endIndex = startIndex + 3;
+
+                 if(positions[endIndex + 2] >= 0 || positions[startIndex + 2] === -1) {
+                      const angle = Math.random() * Math.PI * 2;
+                      const radius = (Math.random() * 0.5 + 0.6) * screenEdgeFactor;
+                      positions[startIndex + 0] = Math.cos(angle) * radius;
+                      positions[startIndex + 1] = Math.sin(angle) * radius;
+                      positions[startIndex + 2] = -Math.random() * 3 - 1;
+                      positions[endIndex + 0] = positions[startIndex + 0];
+                      positions[endIndex + 1] = positions[startIndex + 1];
+                      positions[endIndex + 2] = positions[startIndex + 2];
+                 }
+
+                 const moveSpeed = (15 + Math.random() * 10) * speedFactor * deltaTime;
+                 positions[startIndex + 2] += moveSpeed;
+                 positions[endIndex + 2] = positions[startIndex + 2] + baseLineLength * (1 + Math.random() * 0.3);
+
+                 const shrinkFactor = 0.97;
+                 positions[startIndex + 0] *= shrinkFactor;
+                 positions[startIndex + 1] *= shrinkFactor;
+                 positions[endIndex + 0] = positions[startIndex + 0];
+                 positions[endIndex + 1] = positions[startIndex + 1];
+            }
+
+            windLinesMesh.geometry.attributes.position.needsUpdate = true;
+        }
+        function showDamageEffect(position, intensity = 1.0){
+            if(!hasarKaplamasi) return;
+            hasarKaplamasi.style.display = 'block';
+            hasarKaplamasi.style.backgroundColor = `rgba(200, 0, 0, ${0.5 * intensity})`;
+            hasarKaplamasi.style.opacity = '1';
+            setTimeout(()=>{
+                if(!hasarKaplamasi) return;
+                hasarKaplamasi.style.opacity = '0';
+                setTimeout(()=>{
+                    if(!hasarKaplamasi) return;
+                    hasarKaplamasi.style.display = 'none';
+                }, 50);
+            }, 50);
+        }
+        let pepperSprayScreenEffectActive = false;
+        function startPepperSprayScreenEffect(){
+            if(!pepperSprayScreenEffectActive){
+                pepperSprayScreenEffectActive = true;
+                biberGaziKaplamasi.style.display = 'block';
+                requestAnimationFrame(() => {
+                     if(biberGaziKaplamasi) biberGaziKaplamasi.style.opacity = '0.7';
+                });
+            }
+        }
+        function stopPepperSprayScreenEffect(){
+             if(pepperSprayScreenEffectActive){
+                pepperSprayScreenEffectActive = false;
+                biberGaziKaplamasi.style.opacity = '0';
+                setTimeout(()=>{
+                    if (!pepperSprayScreenEffectActive && biberGaziKaplamasi) {
+                         biberGaziKaplamasi.style.display = 'none';
+                    }
+                }, 200);
+             }
+        }
+        function createParticleSystem(count, originPosition, color, type, velocityMinMax = {min: 1, max: 4}, lifetimeMinMax = {min: 0.4, max: 1.0}, gravityMultiplier = 1.0, size = 0.1){
+            const geometry = new THREE.BufferGeometry();
+            const positions = new Float32Array(count * 3);
+            const velocities = new Float32Array(count * 3);
+            const lifetimes = new Float32Array(count);
+            const initialLifetimes = new Float32Array(count);
+
+            const velocityRange = velocityMinMax.max - velocityMinMax.min;
+            const lifetimeRange = lifetimeMinMax.max - lifetimeMinMax.min;
+
+            for(let i = 0; i < count; i++){
+                const i3 = i * 3;
+                positions[i3 + 0] = originPosition.x + (Math.random() - 0.5) * 0.1;
+                positions[i3 + 1] = originPosition.y + (Math.random() - 0.5) * 0.1;
+                positions[i3 + 2] = originPosition.z + (Math.random() - 0.5) * 0.1;
+
+                let vx, vy, vz;
+                const lifetime = lifetimeMinMax.min + Math.random() * lifetimeRange;
+                const speed = velocityMinMax.min + Math.random() * velocityRange;
+
+                if(type === 'blood'){
+                    const phi = Math.random() * Math.PI * 2;
+                    const costheta = Math.random() * 2 - 1;
+                    const sintheta = Math.sqrt(1 - costheta * costheta);
+                    vx = speed * sintheta * Math.cos(phi);
+                    vy = speed * costheta;
+                    vz = speed * sintheta * Math.sin(phi);
+                } else if (type === 'gas_cloud'){
+                    const angle = Math.random() * Math.PI * 2;
+                    const radiusSpeed = Math.random() * speed * 0.5;
+                    vx = Math.cos(angle) * radiusSpeed;
+                    vy = Math.random() * speed * 0.8 + 0.2;
+                    vz = Math.sin(angle) * radiusSpeed;
+                } else {
+                    const angle = Math.random() * Math.PI * 2;
+                    vx = Math.cos(angle) * speed * (Math.random() * 0.5 + 0.5);
+                    vy = Math.random() * speed * 1.5 + speed * 0.5;
+                    vz = Math.sin(angle) * speed * (Math.random() * 0.5 + 0.5);
+                }
+
+                velocities[i3 + 0] = vx;
+                velocities[i3 + 1] = vy;
+                velocities[i3 + 2] = vz;
+
+                lifetimes[i] = lifetime;
+                initialLifetimes[i] = lifetime;
+            }
+
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            geometry.setAttribute('velocity', new THREE.BufferAttribute(velocities, 3));
+            geometry.setAttribute('lifetime', new THREE.BufferAttribute(lifetimes, 1));
+            geometry.setAttribute('initialLifetime', new THREE.BufferAttribute(initialLifetimes, 1));
+
+            let materialInstance;
+            if(type === 'gas_cloud'){
+                materialInstance = gasCloudMaterial.clone();
+            } else {
+                materialInstance = new THREE.PointsMaterial({
+                    color: color,
+                    size: size,
+                    transparent: true,
+                    opacity: 0.9,
+                    sizeAttenuation: true,
+                    depthWrite: false,
+                    blending: THREE.NormalBlending
+                });
+            }
+
+            const points = new THREE.Points(geometry, materialInstance);
+            points.userData = { type: type, startTime: clock.elapsedTime, gravityMultiplier: gravityMultiplier };
+            scene.add(points);
+            activeParticles.push(points);
+            return points;
+        }
+        function updateParticles(deltaTime){
+            const gravityForce = GRAVITY;
+
+            for(let i = activeParticles.length - 1; i >= 0; i--){
+                const points = activeParticles[i];
+                if(!points || !points.geometry || !points.material) {
+                    activeParticles.splice(i, 1);
+                    const cloudIndex = gasClouds.findIndex(c => c.mesh === points);
+                    if(cloudIndex > -1) gasClouds.splice(cloudIndex, 1);
+                    continue;
+                }
+
+                const geometry = points.geometry;
+                const positions = geometry.attributes.position.array;
+                const velocities = geometry.attributes.velocity.array;
+                const lifetimes = geometry.attributes.lifetime.array;
+                const initialLifetimes = geometry.attributes.initialLifetime.array;
+                const gravityMultiplier = points.userData.gravityMultiplier || 1.0;
+                const particleType = points.userData.type;
+
+                let activeCount = 0;
+                let totalInitialLifetime = 0;
+                let totalRemainingLifetime = 0;
+
+                const numParticles = lifetimes.length;
+
+                for(let j = 0; j < numParticles; j++){
+                     lifetimes[j] -= deltaTime;
+
+                     if(lifetimes[j] > 0){
+                        const i3 = j * 3;
+                        velocities[i3 + 1] += gravityForce * gravityMultiplier * deltaTime;
+
+                        positions[i3 + 0] += velocities[i3 + 0] * deltaTime;
+                        positions[i3 + 1] += velocities[i3 + 1] * deltaTime;
+                        positions[i3 + 2] += velocities[i3 + 2] * deltaTime;
+
+                        if(particleType === 'blood'){
+                            const groundY = getSurfaceHeight(positions[i3 + 0], positions[i3 + 2]);
+                            if(positions[i3 + 1] < groundY + 0.05){
+                                 positions[i3 + 1] = groundY + 0.05;
+                                 velocities[i3 + 1] *= -0.2;
+                                 velocities[i3 + 0] *= 0.5;
+                                 velocities[i3 + 2] *= 0.5;
+                                 lifetimes[j] *= 0.5;
+                            }
+                        }
+                        else if (particleType === 'gas_cloud') {
+                            velocities[i3 + 0] *= 0.95;
+                            velocities[i3 + 1] *= 0.97;
+                            velocities[i3 + 2] *= 0.95;
+                        }
+
+                        activeCount++;
+                        totalInitialLifetime += initialLifetimes[j];
+                        totalRemainingLifetime += lifetimes[j];
+                     } else {
+                         const i3 = j * 3;
+                         positions[i3 + 0] = 0; positions[i3 + 1] = -10000; positions[i3 + 2] = 0;
+                     }
+                }
+
+                if(points.material.opacity !== undefined && totalInitialLifetime > 0){
+                    const averageLifetimeRatio = totalRemainingLifetime / totalInitialLifetime;
+                    points.material.opacity = Math.max(0, Math.min(0.9, averageLifetimeRatio * 1.5));
+                }
+
+
+                if(activeCount === 0){
+                    scene.remove(points);
+                    geometry.dispose();
+                    if(points.material !== gasCloudMaterial) {
+                         points.material.dispose();
+                    }
+                    activeParticles.splice(i, 1);
+
+                    const cloudIndex = gasClouds.findIndex(c => c.mesh === points);
+                    if(cloudIndex > -1) gasClouds.splice(cloudIndex, 1);
+
+                } else {
+                    geometry.attributes.position.needsUpdate = true;
+                    geometry.attributes.velocity.needsUpdate = true;
+                    geometry.attributes.lifetime.needsUpdate = true;
+                }
+            }
+        }
+        function createBloodEffect(position){
+            createParticleSystem(BLOOD_PARTICLE_COUNT, position, 0x990000, 'blood',
+                                { min: 1, max: 4 }, { min: 0.4, max: 1.0 }, 1.0, 0.06);
+        }
+        function createGasCloud(position){
+            playSound(gazTislamaSesi);
+            const cloudMesh = createParticleSystem(GAS_PARTICLE_COUNT, position, 0xb0b0b0, 'gas_cloud',
+                                    { min: 0.2, max: 0.8 }, { min: PEPPER_SPRAY_DURATION * 0.8, max: PEPPER_SPRAY_DURATION * 1.2 },
+                                    -0.05, 0.2);
+            gasClouds.push({
+                position: position.clone(),
+                startTime: clock.elapsedTime,
+                mesh: cloudMesh
+            });
+        }
+        function updateGasClouds(deltaTime){
+             const playerPosition = camera.position;
+             if(playerHealth <= 0 || gameState !== 'PLAYING') {
+                 stopPepperSprayScreenEffect();
+                 return;
+             }
+
+             let inAnyCloud = false;
+             for(const cloud of gasClouds){
+                 if(playerPosition.distanceToSquared(cloud.position) < PEPPER_GAS_CLOUD_SIZE * PEPPER_GAS_CLOUD_SIZE){
+                     inAnyCloud = true;
+                     break;
+                 }
+             }
+
+             if(inAnyCloud){
+                 startPepperSprayScreenEffect();
+                 dealDamageToPlayer(POLICE_DAMAGE.PEPPER_SPRAY_DOT * deltaTime, 'pepper_spray_dot');
+             } else {
+                 stopPepperSprayScreenEffect();
+             }
+        }
+        function isInGasCloud(position){
+            for(const cloud of gasClouds){
+                if(position.distanceToSquared(cloud.position) < PEPPER_GAS_CLOUD_SIZE * PEPPER_GAS_CLOUD_SIZE){
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function createPoliceMesh(){
+            const group = new THREE.Group();
+            const bodyHeight = 0.8, bodyWidth = 0.55, bodyDepth = 0.35;
+            const headSize = 0.4;
+            const vestThickness = 0.04;
+
+            const bodyGeo = new THREE.BoxGeometry(bodyWidth, bodyHeight, bodyDepth);
+            const bodyMesh = new THREE.Mesh(bodyGeo, policeMaterials.body);
+            bodyMesh.position.y = bodyHeight / 2;
+            group.add(bodyMesh);
+
+            const vestGeo = new THREE.BoxGeometry(bodyWidth + vestThickness, bodyHeight * 0.8, bodyDepth + vestThickness);
+            const vestMesh = new THREE.Mesh(vestGeo, policeMaterials.vest);
+            vestMesh.position.y = bodyHeight * 0.5;
+            group.add(vestMesh);
+
+            const headGeo = new THREE.BoxGeometry(headSize, headSize, headSize);
+            const headMesh = new THREE.Mesh(headGeo, policeMaterials.skin);
+            headMesh.position.y = bodyHeight + headSize / 2;
+            group.add(headMesh);
+
+            const helmetGeo = new THREE.BoxGeometry(headSize + 0.08, headSize * 0.55, headSize + 0.08);
+            const helmetMesh = new THREE.Mesh(helmetGeo, policeMaterials.helmet);
+            helmetMesh.position.y = bodyHeight + headSize * 0.75;
+            group.add(helmetMesh);
+
+            const armGeo = new THREE.BoxGeometry(0.12, bodyHeight * 0.9, 0.12);
+            const leftArm = new THREE.Mesh(armGeo, policeMaterials.body);
+            leftArm.position.set(-(bodyWidth / 2 + 0.08), bodyHeight / 2, 0);
+            group.add(leftArm);
+            const rightArm = new THREE.Mesh(armGeo, policeMaterials.body);
+            rightArm.position.set(bodyWidth / 2 + 0.08, bodyHeight / 2, 0);
+            group.add(rightArm);
+
+            const totalHeight = bodyHeight + headSize + 0.1;
+            const totalWidth = bodyWidth + 0.16 * 2;
+            const totalDepth = bodyDepth + 0.16;
+
+            group.userData.entityType = 'police';
+            group.userData.boundingBoxSize = new THREE.Vector3(totalWidth, totalHeight, totalDepth);
+
+            group.traverse((child) => {
+                if (child.isMesh) {
+                    child.castShadow = true;
+                    child.receiveShadow = false;
+                    child.name = `police_part_${child.uuid.substring(0, 4)}`;
+                }
+            });
+
+            return group;
+        }
+        function spawnPolice(position){
+             if(policeEntities.length >= MAX_POLICE) return;
+
+             const mesh = createPoliceMesh();
+             mesh.position.copy(position);
+
+             const boundingBox = mesh.userData.boundingBoxSize || new THREE.Vector3(0.8, 1.6, 0.6);
+             const heightOffset = boundingBox.y / 2;
+
+             const groundY = getSurfaceHeight(position.x, position.z);
+             mesh.position.y = groundY + heightOffset + COLLISION_EPSILON;
+
+             scene.add(mesh);
+
+             const entity = {
+                 id: nextEntityId++,
+                 type: 'police',
+                 mesh: mesh,
+                 position: mesh.position,
+                 velocity: new THREE.Vector3(),
+                 onGround: true,
+                 boundingBoxSize: boundingBox,
+                 heightOffset: heightOffset,
+                 targetAngle: Math.random() * Math.PI * 2,
+                 wanderTimer: Math.random() * 4 + 2,
+                 health: MAX_HEALTH,
+                 maxHealth: MAX_HEALTH,
+                 attackCooldownGas: 0,
+                 attackCooldownBullet: 0,
+                 state: 'wander',
+                 targetPlayer: null
+             };
+             entity.mesh.userData.entityId = entity.id;
+             policeEntities.push(entity);
+        }
+        function updateEntities(deltaTime){
+            const playerPosition = camera.position;
+            const isPlayerAliveAndPlaying = (gameState === 'PLAYING' && playerHealth > 0);
+
+            for(let i = policeEntities.length - 1; i >= 0; i--){
+                const entity = policeEntities[i];
+                if(!entity || !entity.mesh || !entity.position) {
+                     if (entity && !entity.mesh) {
+                         policeEntities.splice(i, 1);
+                     }
+                    continue;
+                }
+
+                if(entity.attackCooldownGas > 0) entity.attackCooldownGas -= deltaTime;
+                if(entity.attackCooldownBullet > 0) entity.attackCooldownBullet -= deltaTime;
+
+                let targetVelocityX = 0;
+                let targetVelocityZ = 0;
+                const currentMoveSpeed = POLICE_MOVE_SPEED;
+                entity.targetPlayer = null;
+
+                if(isPlayerAliveAndPlaying){
+                    const distanceToPlayer = entity.position.distanceTo(playerPosition);
+
+                    if(distanceToPlayer < POLICE_DETECT_RANGE){
+                         const directionToPlayer = playerPosition.clone().sub(entity.position).normalize();
+                         const rayOrigin = entity.position.clone().add(new THREE.Vector3(0, entity.heightOffset * 0.8, 0));
+                         raycaster.set(rayOrigin, directionToPlayer);
+                         raycaster.far = distanceToPlayer + 0.5;
+
+                         const worldMeshes = Object.values(world).map(c => c.mesh).filter(m => m !== null);
+                         const intersects = raycaster.intersectObjects(worldMeshes, false);
+
+                         if(intersects.length === 0 || intersects[0].distance > distanceToPlayer - 0.5){
+                             entity.targetPlayer = playerPosition;
+                             entity.targetAngle = Math.atan2(directionToPlayer.x, directionToPlayer.z);
+                         }
+                    }
+                }
+
+                 if(entity.targetPlayer){
+                     const distanceToTarget = entity.position.distanceTo(entity.targetPlayer);
+                     const directionToTarget = entity.targetPlayer.clone().sub(entity.position).normalize();
+
+                     if(distanceToTarget < POLICE_ATTACK_RANGE_GAS && entity.attackCooldownGas <= 0){
+                         entity.state = 'attacking_gas';
+                         entity.velocity.x = 0; entity.velocity.z = 0;
+                         const launchPosition = entity.position.clone().add(new THREE.Vector3(0, entity.heightOffset * 0.7, 0));
+                         const launchDirection = directionToTarget.clone();
+                         launchDirection.y += 0.1 + Math.random() * 0.1;
+                         launchDirection.normalize();
+                         launchProjectile(PROJECTILE_TYPES.GAS_CAPSULE, launchPosition, launchDirection.multiplyScalar(GAS_CAPSULE_SPEED), 'police');
+                         playSound(gazFirlatmaSesi);
+                         entity.attackCooldownGas = POLICE_ATTACK_COOLDOWN_GAS + Math.random();
+                     }
+                     else if (distanceToTarget < POLICE_ATTACK_RANGE_BULLET && entity.attackCooldownBullet <= 0) {
+                         entity.state = 'attacking_bullet';
+                         entity.velocity.x = 0; entity.velocity.z = 0;
+                         const launchPosition = entity.position.clone().add(new THREE.Vector3(0, entity.heightOffset * 0.8, 0));
+                         const accuracy = 0.05;
+                         const launchDirection = directionToTarget.clone().add(
+                             new THREE.Vector3(
+                                 (Math.random() - 0.5) * accuracy,
+                                 (Math.random() - 0.5) * accuracy,
+                                 (Math.random() - 0.5) * accuracy
+                             )).normalize();
+                         launchProjectile(PROJECTILE_TYPES.POLICE_BULLET, launchPosition, launchDirection.multiplyScalar(BULLET_SPEED), 'police', POLICE_DAMAGE.PLASTIC_BULLET);
+                         playSound(silahAtesSesi, 0.5);
+                         entity.attackCooldownBullet = POLICE_ATTACK_COOLDOWN_BULLET + Math.random() * 0.5;
+                     }
+                     else if (distanceToTarget >= POLICE_ATTACK_RANGE_GAS * 0.5) {
+                         entity.state = 'chasing';
+                         targetVelocityX = directionToTarget.x * currentMoveSpeed;
+                         targetVelocityZ = directionToTarget.z * currentMoveSpeed;
+                     }
+                     else {
+                          entity.state = 'chasing_close';
+                          targetVelocityX = directionToTarget.x * currentMoveSpeed * -0.2;
+                          targetVelocityZ = directionToTarget.z * currentMoveSpeed * -0.2;
+                     }
+
+                 } else {
+                     entity.state = 'wander';
+                 }
+
+                 if(entity.state === 'wander'){
+                      entity.wanderTimer -= deltaTime;
+                      if(entity.onGround){
+                          if(entity.wanderTimer <= 0){
+                              if(Math.random() < 0.8){
+                                  entity.targetAngle = Math.random() * Math.PI * 2;
+                              } else {
+                                  entity.targetAngle = null;
+                              }
+                              entity.wanderTimer = Math.random() * 3 + 1.5;
+                          }
+
+                          if(entity.targetAngle !== null && entity.wanderTimer > 0.5){
+                              targetVelocityX = Math.sin(entity.targetAngle) * currentMoveSpeed * 0.5;
+                              targetVelocityZ = Math.cos(entity.targetAngle) * currentMoveSpeed * 0.5;
+                          } else {
+                              targetVelocityX = 0;
+                              targetVelocityZ = 0;
+                          }
+                      } else {
+                           targetVelocityX = entity.velocity.x * 0.98;
+                           targetVelocityZ = entity.velocity.z * 0.98;
+                      }
+                 }
+
+                 entity.velocity.y += GRAVITY * deltaTime;
+
+                 const lerpFactor = 0.15;
+                 entity.velocity.x = THREE.MathUtils.lerp(entity.velocity.x, targetVelocityX, lerpFactor);
+                 entity.velocity.z = THREE.MathUtils.lerp(entity.velocity.z, targetVelocityZ, lerpFactor);
+
+                 const deltaPhysics = entity.velocity.clone().multiplyScalar(deltaTime);
+                 entity.onGround = false;
+
+                 const currentPos = entity.position;
+                 const bboxSize = entity.boundingBoxSize;
+                 const heightOff = entity.heightOffset;
+
+                 let targetPosX = currentPos.clone().add(new THREE.Vector3(deltaPhysics.x, 0, 0));
+                 if (!checkCollision(targetPosX, bboxSize, heightOff)) {
+                     entity.position.x = targetPosX.x;
+                 } else {
+                     entity.velocity.x *= -0.1;
+                     if(entity.state === 'wander' || entity.state === 'chasing') entity.wanderTimer = 0.1;
+                 }
+
+                 let targetPosZ = currentPos.clone().add(new THREE.Vector3(0, 0, deltaPhysics.z));
+                 if (!checkCollision(targetPosZ, bboxSize, heightOff)) {
+                     entity.position.z = targetPosZ.z;
+                 } else {
+                     entity.velocity.z *= -0.1;
+                     if(entity.state === 'wander' || entity.state === 'chasing') entity.wanderTimer = 0.1;
+                 }
+
+                 let targetPosY = currentPos.clone().add(new THREE.Vector3(0, deltaPhysics.y, 0));
+                 if (!checkCollision(targetPosY, bboxSize, heightOff)) {
+                     entity.position.y = targetPosY.y;
+                 } else {
+                     if (deltaPhysics.y < 0) {
+                         entity.onGround = true;
+                         const floorY = Math.floor(currentPos.y - heightOff + deltaPhysics.y);
+                         entity.position.y = floorY + 1 + heightOff + COLLISION_EPSILON;
+                         entity.velocity.y = 0;
+                     } else {
+                         const ceilY = Math.ceil(currentPos.y + (bboxSize.y - heightOff) + deltaPhysics.y);
+                         entity.position.y = ceilY - (bboxSize.y - heightOff) - COLLISION_EPSILON;
+                         entity.velocity.y = 0;
+                     }
+                 }
+
+                 if(entity.position.y < heightOff){
+                     entity.position.y = heightOff + COLLISION_EPSILON;
+                     entity.velocity.y = 0;
+                     entity.onGround = true;
+                 }
+
+                 if(Math.abs(entity.velocity.x) > 0.01 || Math.abs(entity.velocity.z) > 0.01 || entity.state.startsWith('attacking')){
+                     if (entity.targetAngle !== null) {
+                         const targetYRotation = entity.targetAngle;
+                         let deltaRotation = targetYRotation - entity.mesh.rotation.y;
+                         while (deltaRotation < -Math.PI) deltaRotation += Math.PI * 2;
+                         while (deltaRotation > Math.PI) deltaRotation -= Math.PI * 2;
+                         entity.mesh.rotation.y += deltaRotation * 0.15;
+                     }
+                 }
+
+                 if(entity.health <= 0){
+                     if(entity.mesh) scene.remove(entity.mesh);
+                     policeEntities.splice(i, 1);
+                     showNotification("Ajan etkisiz hale getirildi.");
+                 }
+            }
+        }
+
+        function launchProjectile(type, position, velocity, owner = 'police', damageOverride = null){
+            let geometry, materialInstance, scale = 1.0, lifetime = PROJECTILE_MAX_LIFETIME;
+            let hitCallback = null;
+            let isBulletType = false;
+            let damage = 0;
+
+            switch(type){
+                case PROJECTILE_TYPES.GAS_CAPSULE:
+                    geometry = new THREE.CapsuleGeometry(0.06, 0.12, 4, 8);
+                    materialInstance = projectileMaterials[type].clone();
+                    damage = POLICE_DAMAGE.PEPPER_SPRAY_IMPACT;
+                    hitCallback = (hitPos) => createGasCloud(hitPos);
+                    break;
+                case PROJECTILE_TYPES.POLICE_BULLET:
+                    geometry = new THREE.SphereGeometry(0.05, 6, 4);
+                    materialInstance = projectileMaterials[type];
+                    lifetime = 0.8;
+                    isBulletType = true;
+                    hitCallback = (hitPos) => { };
+                    damage = damageOverride !== null ? damageOverride : POLICE_DAMAGE.PLASTIC_BULLET;
+                    break;
+                default:
+                    return;
+            }
+
+            const mesh = new THREE.Mesh(geometry, materialInstance);
+            mesh.scale.set(scale, scale, scale);
+            mesh.position.copy(position);
+            mesh.castShadow = false;
+            mesh.receiveShadow = false;
+            mesh.userData.isProjectile = true;
+
+            const projectile = {
+                id: nextEntityId++,
+                type: type,
+                mesh: mesh,
+                position: mesh.position,
+                velocity: velocity.clone(),
+                owner: owner,
+                damage: damage,
+                lifetime: lifetime,
+                spawnTime: clock.elapsedTime,
+                hitCallback: hitCallback,
+                isBullet: isBulletType
+            };
+            projectiles.push(projectile);
+            scene.add(mesh);
+        }
+        function updateProjectiles(deltaTime){
+            const playerPosition = camera.position;
+
+            for(let i = projectiles.length - 1; i >= 0; i--){
+                 const proj = projectiles[i];
+
+                 if(clock.elapsedTime - proj.spawnTime > proj.lifetime){
+                     if(proj.mesh) scene.remove(proj.mesh);
+                     projectiles.splice(i, 1);
+                     continue;
+                 }
+
+                 if(!proj.isBullet){
+                     proj.velocity.y += GRAVITY * 0.7 * deltaTime;
+                 }
+
+                 const deltaMove = proj.velocity.clone().multiplyScalar(deltaTime);
+                 const nextPosition = proj.position.clone().add(deltaMove);
+
+                 let hit = false;
+                 let hitPosition = nextPosition.clone();
+                 const projectileRadius = proj.isBullet ? 0.1 : 0.2;
+
+                 const projBBox = new THREE.Box3().setFromCenterAndSize(nextPosition, new THREE.Vector3(projectileRadius * 2, projectileRadius * 2, projectileRadius * 2));
+
+                 const minX = Math.floor(Math.min(proj.position.x, nextPosition.x) - projectileRadius);
+                 const maxX = Math.ceil(Math.max(proj.position.x, nextPosition.x) + projectileRadius);
+                 const minY = Math.floor(Math.min(proj.position.y, nextPosition.y) - projectileRadius);
+                 const maxY = Math.ceil(Math.max(proj.position.y, nextPosition.y) + projectileRadius);
+                 const minZ = Math.floor(Math.min(proj.position.z, nextPosition.z) - projectileRadius);
+                 const maxZ = Math.ceil(Math.max(proj.position.z, nextPosition.z) + projectileRadius);
+
+                 for(let y = minY; y < maxY && !hit; y++){
+                    for(let z = minZ; z < maxZ && !hit; z++){
+                        for(let x = minX; x < maxX && !hit; x++){
+                            const blockType = getBlock(x, y, z);
+                            const isSolid = blockType !== BLOCK_TYPES.AIR &&
+                                            blockType !== BLOCK_TYPES.WINDOW &&
+                                            blockType !== BLOCK_TYPES.TREE_LEAVES;
+                            if(isSolid){
+                                const blockBox = new THREE.Box3(new THREE.Vector3(x, y, z), new THREE.Vector3(x + 1, y + 1, z + 1));
+                                if(projBBox.intersectsBox(blockBox)){
+                                     hit = true;
+                                     hitPosition = proj.position.clone();
+                                     if(proj.isBullet) playSound(mermiCarpmaSesi);
+                                     break;
+                                }
+                            }
+                        }
+                    }
+                 }
+
+
+                 if(!hit && proj.owner === 'police' && playerHealth > 0 && gameState === 'PLAYING'){
+                     const playerHitBoxSize = new THREE.Vector3(PLAYER_RADIUS * 1.8, PLAYER_HEIGHT * 0.9, PLAYER_RADIUS * 1.8);
+                     const playerBox = new THREE.Box3().setFromCenterAndSize(
+                         playerPosition.clone().add(new THREE.Vector3(0, -PLAYER_HEIGHT * 0.05, 0)),
+                         playerHitBoxSize
+                     );
+
+                     if(projBBox.intersectsBox(playerBox)){
+                         dealDamageToPlayer(proj.damage, proj.isBullet ? 'bullet' : 'gas_impact');
+                         if(proj.isBullet) playSound(oyuncuHasarSesi);
+                         hit = true;
+                         hitPosition = playerPosition.clone();
+                     }
+                 }
+
+                 if(hit){
+                     if(proj.hitCallback) proj.hitCallback(hitPosition);
+                     if(proj.mesh) scene.remove(proj.mesh);
+                     projectiles.splice(i, 1);
+                     continue;
+                 }
+
+                 proj.position.copy(nextPosition);
+                 if(!proj.isBullet && proj.mesh){
+                    proj.mesh.lookAt(nextPosition.clone().add(proj.velocity));
+                 }
+
+                 if(proj.isBullet && playerHealth > 0 && gameState === 'PLAYING'){
+                    const distanceToPlayer = proj.position.distanceTo(playerPosition);
+                    if(distanceToPlayer < 2.0 && Math.random() < 0.05){
+                        playSound(mermiViziltiSesi, 0.3);
+                    }
+                 }
+            }
+        }
+
+        function dealDamageToPlayer(amount, type = 'generic'){
+            if(playerHealth <= 0 || gameState !== 'PLAYING') return;
+
+            playerHealth -= amount;
+            lastDamageTime = clock.elapsedTime;
+            showDamageEffect(camera.position);
+            playSound(oyuncuHasarSesi);
+            updateHealthStaminaUI();
+
+            if(playerHealth <= 0){
+                handlePlayerDeath();
+            }
+        }
+        function dealDamageToPolice(entity, amount){
+            if(!entity || entity.health <= 0) return;
+
+            entity.health -= amount;
+            createBloodEffect(entity.position.clone().add(new THREE.Vector3(0, entity.heightOffset * 0.6, 0)));
+            playSound(polisHasarSesi);
+
+            if(entity.mesh){
+                const originalMaterials = new Map();
+                entity.mesh.traverse((child) => {
+                    if(child.isMesh && child.material){
+                        originalMaterials.set(child, child.material);
+                        const hitMaterial = child.material.clone();
+                        hitMaterial.color.setHex(0xff0000);
+                        if(hitMaterial.emissive) hitMaterial.emissive.setHex(0x550000);
+                        child.material = hitMaterial;
+                    }
+                });
+                setTimeout(() => {
+                    if(entity.mesh){
+                        entity.mesh.traverse((child) => {
+                            if(child.isMesh && originalMaterials.has(child)){
+                                child.material = originalMaterials.get(child);
+                            }
+                        });
+                    }
+                }, 100);
+            }
+        }
+        function handlePlayerDeath(){
+             if(gameState === 'DEAD') return;
+
+             gameState = 'DEAD';
+             playerHealth = 0;
+             updateHealthStaminaUI();
+
+             isSprinting = false;
+             targetFov = originalFov;
+             camera.fov = originalFov;
+             camera.updateProjectionMatrix();
+             stopPepperSprayScreenEffect();
+
+             olumEkrani.style.display = 'flex';
+             playSound(olumSesi);
+
+             if(controls && controls.isLocked){
+                 controls.unlock();
+             }
+             joystickActive = false;
+             joystickDeltaX = 0; joystickDeltaY = 0; joystickMagnitude = 0;
+             if(joystickCubugu) joystickCubugu.style.transform = `translate(-50%, -50%) translate(0px, 0px)`;
+             lookActive = false;
+        }
+
+        function playSound(audioElement, volume = 0.5){
+            if(audioElement){
+                try {
+                    audioElement.pause();
+                    audioElement.currentTime = 0;
+                    audioElement.volume = Math.max(0, Math.min(1, volume));
+                    const playPromise = audioElement.play();
+                    if (playPromise !== undefined) {
+                        playPromise.catch(error => {});
+                    }
+                } catch(e) {}
+            }
+        }
+        function onWindowResize(){
+            if(!camera || !renderer) return;
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            checkOrientation();
+        }
+
+        function animate() {
+             requestAnimationFrame(animate);
+
+             const deltaTime = Math.min(clock.getDelta(), 0.05);
+             const elapsedTime = clock.getElapsedTime();
+
+             try {
+                 updateWorldChunks();
+
+                 if(gameState === 'PLAYING'){
+                     updatePlayer(deltaTime);
+                     updateEntities(deltaTime);
+                     updateProjectiles(deltaTime);
+                     updateParticles(deltaTime);
+                     if(windLinesMesh) windLinesMesh.visible = isSprinting;
+                 }
+                 else if(gameState === 'MENU' && menuCameraAnimation.active){
+                     const animSpeed = 0.04;
+                     const radius = CHUNK_SIZE * 1.2;
+                     const height = BASE_CITY_Y + 20 + Math.sin(elapsedTime * animSpeed * 0.6) * 6;
+                     const lookRadius = CHUNK_SIZE * 0.5;
+
+                     camera.position.x = Math.sin(elapsedTime * animSpeed) * radius + CHUNK_SIZE / 2;
+                     camera.position.z = Math.cos(elapsedTime * animSpeed) * radius + CHUNK_SIZE / 2;
+                     camera.position.y = height;
+
+                     const lookX = Math.sin(-elapsedTime * animSpeed * 0.4) * lookRadius + CHUNK_SIZE / 2;
+                     const lookZ = Math.cos(-elapsedTime * animSpeed * 0.4) * lookRadius + CHUNK_SIZE / 2;
+                     menuCameraAnimation.lookAtTarget.set(lookX, BASE_CITY_Y + 3, lookZ);
+                     camera.lookAt(menuCameraAnimation.lookAtTarget);
+
+                     if(windLinesMesh) windLinesMesh.visible = false;
+                     updateParticles(deltaTime);
+                 }
+                 else if(gameState === 'PAUSED' || gameState === 'DEAD'){
+                     if(windLinesMesh) windLinesMesh.visible = false;
+                     updateParticles(deltaTime);
+                 }
+
+                 if(renderer && scene && camera){
+                     renderer.render(scene, camera);
+                 }
+
+             } catch(error) {
+                 if(gameState === 'PLAYING'){
+                     pauseGame();
+                 }
+                 showNotification("Kritik Hata Oluştu! Konsolu kontrol edin.");
+             }
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+
+    </script>
+</body>
+</html>
