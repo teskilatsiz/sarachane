@@ -1122,7 +1122,17 @@
              const forwardDirection = new THREE.Vector3(); camera.getWorldDirection(forwardDirection); forwardDirection.y = 0; forwardDirection.normalize();
              const rightDirection = new THREE.Vector3(); rightDirection.crossVectors(camera.up, forwardDirection).normalize();
              let moveForward = 0; let moveRight = 0;
-             if(joystickActive){ moveForward = -joystickDeltaY * joystickMagnitude; moveRight = joystickDeltaX * joystickMagnitude; } else if (!isMobile) { if(keys['KeyW']) moveForward += 1; if(keys['KeyS']) moveForward -= 1; if(keys['KeyA']) moveRight -= 1; if(keys['KeyD']) moveRight += 1; }
+
+             if(joystickActive){
+                 moveForward = -joystickDeltaY * joystickMagnitude;
+                 moveRight = -joystickDeltaX * joystickMagnitude;
+             } else if (!isMobile) {
+                 if(keys['KeyW']) moveForward += 1;
+                 if(keys['KeyS']) moveForward -= 1;
+                 if(keys['KeyA']) moveRight += 1;
+                 if(keys['KeyD']) moveRight -= 1;
+             }
+
              const moveDirection = new THREE.Vector3(); moveDirection.addScaledVector(forwardDirection, moveForward); moveDirection.addScaledVector(rightDirection, moveRight); moveDirection.normalize();
              playerVelocity.y += GRAVITY * deltaTime;
              if(!isMobile && keys['Space'] && playerOnGround){ playerVelocity.y = JUMP_VELOCITY; playerOnGround = false; }
